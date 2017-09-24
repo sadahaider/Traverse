@@ -15,7 +15,6 @@ Online open source music sharing service
     * update-alternatives --config javac
 
 
-
 ```
 mvn install
 docker build -f Dockerfile -t traverse .
