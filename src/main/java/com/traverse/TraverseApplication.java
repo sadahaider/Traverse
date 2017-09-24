@@ -16,8 +16,8 @@ public class TraverseApplication extends SpringBootServletInitializer {
 	private static final Log logger = LogFactory.getLog(TraverseApplication.class);
 
 	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(TraverseApplication.class);
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(TraverseApplication.class);
 	}
 
 	public static void main(String[] args) throws Exception {
