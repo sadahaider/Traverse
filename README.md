@@ -3,7 +3,7 @@ Online open source music sharing service
 
 
 
-#### How to run server on localhost:8080
+#### Running server on localhost:8080
 
 ###### Requires 
 * Apache Maven 3.3.9
@@ -13,7 +13,6 @@ Online open source music sharing service
 ###### Notes: 
 * Make sure your java compiler is set to 1.8
     * update-alternatives --config javac
-
 
 ```
 mvn install
