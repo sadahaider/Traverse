@@ -21,6 +21,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<start-class>com.traverse.TraverseApplication</start-class>
 		<java.version>1.8</java.version>
 	</properties>
 
@@ -66,25 +67,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-
-			<plugin>
-				<groupId>org.lesscss</groupId>
-				<artifactId>lesscss-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>less-compile</id>
-					</execution>
-				</executions>
-				<configuration>
-					<sourceDirectory>${project.basedir}/src/main/transient-resources/less</sourceDirectory>
-					<outputDirectory>${project.basedir}/src/main/resources/static/css</outputDirectory>
-					<compress>true</compress>
-					<includes>
-						<include>main.less</include>
-					</includes>
-				</configuration>
-			</plugin>
-
 		</plugins>
 
 	</build>
