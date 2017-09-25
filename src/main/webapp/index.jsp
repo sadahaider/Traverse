@@ -17,36 +17,76 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 
 <body>
-<div class="logo">
-	<span class="icon fa-diamond"></span>
-</div>
 
-<div class="content">
-	<div class="inner">
-		<h1>TraVerse</h1>
-		<p>A music sharing site </p>
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+	<div style ="margin-left:10%">
+
+	<div class="w3-top">
+		<div class="w3-bar">
+	<input type = "text" name="search" placeholder="Search...">
+			<!-- Header -->
+			<header id="header">
+			<nav>
+				<ul>
+					<li><a href="#recent">Recent</a></li>
+					<li><a href="#friends">Friends</a></li>
+					<li><a href="#profile">Profile</a></li>
+					<li><a href="#contact">Contact</a></li>
+					<!--<li><a href="#elements">Elements</a></li>-->
+
+
+				</ul>
+			</nav>
+
+			</header>
+
+
+			<div class="w3-container w3-light-green" style="top: auto">
+				<h1>Recommended</h1>
+			</div>
+		</div>
 	</div>
-</div>
 
-<input type = "text" name="search" placeholder="Search...">
+			<div>
+				<h1>track Name1</h1>
+			<audio controls>
 
-<!-- Header -->
-<header id="header">
+				<source src="Audio/03%20Engine%2045.mp3 " type="audio/mpeg">
+			</audio>
+			</div>
+		<div>
+			<h1>track Name2</h1>
+				<audio controls>
+				<source src="Audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
+				</audio>
+		</div>
+		<div>
+			<h1>track Name3</h1>
+					<audio controls>
+					<source src="Audio/07%20White%20Light.mp3 " type="audio/mpeg">
 
 
-	<nav>
-		<ul>
-			<li><a href="#recent">Recent</a></li>
-			<li><a href="#friends">Friends</a></li>
-			<li><a href="#profile">Profile</a></li>
-			<li><a href="#contact">Contact</a></li>
-			<!--<li><a href="#elements">Elements</a></li>-->
-		</ul>
-	</nav>
-</header>
+			</audio>
+		</div>
+
+
 
 <!--SideBar-->
-<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:10%">
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:10%;left:0; top: 0%;">
+
+	<div class="logo">
+		<span class="icon fa-diamond"></span>
+	</div>
+
+
+			<a href="#" class="w3-bar-item w3-button">TraVerse</a>
+
+
+			<p>A music sharing site </p>
+
 
 	<a href="#" class="w3-bar-item w3-button">Playlist 1</a>
 	<a href="#" class="w3-bar-item w3-button">Playlist 2</a>
@@ -54,18 +94,6 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 	<a href="#" class="w3-bar-item w3-button">Playlist 4</a>
 	<a href="#" class="w3-bar-item w3-button">Playlist 5</a>
 </div>
-
-
-<!-- Wrapper -->
-<div style ="margin-left:10%">
-
-	<div class="w3-container w3-light-green">
-		<h1>Recommended</h1>
-	</div>
-	<div id="wrapper">
-
-
-
 
 
 		<!-- Main -->
