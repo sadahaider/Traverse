@@ -57,20 +57,20 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 			<div>
 				<h1>track Name1</h1>
 			<audio controls>
-				<source src="Audio/03%20Engine%2045.mp3 " type="audio/mpeg">
+				<source src="audio/03%20Engine%2045.mp3 " type="audio/mpeg">
 			</audio>
 			</div>
 
 		<div>
 			<h1>track Name2</h1>
 				<audio controls>
-				<source src="Audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
+				<source src="audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
 				</audio>
 		</div>
 		<div>
 			<h1>track Name3</h1>
 					<audio controls>
-					<source src="Audio/07%20White%20Light.mp3 " type="audio/mpeg">
+					<source src="audio/07%20White%20Light.mp3 " type="audio/mpeg">
 
 
 			</audio>
