@@ -2,6 +2,7 @@ package com.traverse.data;
 
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.apache.commons.logging.Log;
@@ -10,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import java.net.URL;
 import java.util.UUID;
 
-
+@DynamoDBDocument
 @DynamoDBTable(tableName="traverse_audio")
 public class Audio {
 

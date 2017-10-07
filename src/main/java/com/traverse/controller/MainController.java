@@ -46,11 +46,22 @@ public class MainController {
         user.addAudio(audio);
         audio.setOwnerID(user.getUserID());
 
-        audioDatabase.update(audio); //Create audio
+        audioDatabase.create(audio); //Create audio
         userDatabase.update(user); //Create user
 
         System.out.println(audioDatabase.getAudio(audio.getUniqueID()));
         System.out.println(userDatabase.getUser(user.getUsername()));
+
+
+        Audio audio2 = new Audio.Builder()
+                .withName("Another Sick Song lmao")
+                .withDescription("This is a sick song i put together on notepad.")
+                .withOwnerID(user.getUserID())
+                .build();
+
+        audioDatabase.create(audio2);
+        user.addAudio(audio2);
+        userDatabase.update(user);
 
         return "We made it to end lmao";
     }
