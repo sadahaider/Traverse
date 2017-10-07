@@ -1,5 +1,8 @@
 package com.traverse.data.cloud;
 
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
+import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
@@ -39,6 +42,14 @@ public class UserDatabase {
         dbClient.getMapper().save(user);
     }
 
+    public String getUserJson(String id){
+        Item item = dbClient.getDynamoDB().getTable(tableName).getItem(new PrimaryKey(new KeyAttribute(User.DB_IDENTIFIER_USER_ID, id)));
+        if (item == null){
+            return null;
+        }
+        return item.toJSON();
+    }
+
     public User getUser(String username) throws UserDoesNotExistException {
         Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
         expressionAttributeValues.put(":val", new AttributeValue().withS(username));
@@ -46,7 +57,7 @@ public class UserDatabase {
                 .withTableName(tableName)
                 .withFilterExpression(User.DB_IDENTIFIER_USERNAME + " = :val")
                 .withExpressionAttributeValues(expressionAttributeValues);
-        ScanResult result = dbClient.getClient().scan(scanRequest);
+        ScanResult result = dbClient.getAmazonDynamoDB().scan(scanRequest);
 
         if (result.getItems().size() == 0){
             throw new UserDoesNotExistException("No user under the name: " + username);
@@ -59,5 +70,10 @@ public class UserDatabase {
         String id = result.getItems().get(0).get(User.DB_IDENTIFIER_USER_ID).getS();
         return dbClient.getMapper().load(User.class, id);
     }
+
+    public User getUserByID(String id){
+        return dbClient.getMapper().load(User.class, id);
+    }
+
 
 }

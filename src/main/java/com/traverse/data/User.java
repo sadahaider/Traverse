@@ -1,6 +1,7 @@
 package com.traverse.data;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.traverse.exceptions.UsernameException;
@@ -17,6 +18,7 @@ import java.util.UUID;
  * Holds data pertaining to the user profile.
  *
  */
+@DynamoDBDocument
 @DynamoDBTable(tableName="traverse_users")
 public class User {
 
