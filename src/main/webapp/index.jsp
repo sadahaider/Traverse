@@ -6,94 +6,101 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 -->
 <html>
 <head>
-	<style>
-		ul {
-			position: relative;
-			top:0%;
-			background-color: darkgreen;
-			width: fit-content
-		}
-	</style>
 	<title>TraVerse</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="/assets/css/main.css" />
-	<link rel="stylesheet" href="/assets/css/indexStyle.css" />
 	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript
-
-
-
+	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 </head>
 
+
 <body>
-<div class="logo">
-	<span class="icon fa-diamond"></span>
-</div>
 
-<div class="content">
-	<div class="inner">
-		<h1>TraVerse</h1>
-		<p>A music sharing site </p>
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+	<div style ="margin-left:-65%">
+
+	<div class="w3-top">
+		<div class="w3-bar">
+	<input type = "text" name="search" placeholder="Search...">
+			<!-- Header -->
+			<header id="header">
+			<nav>
+				<ul>
+					<li><a href="#recent">Recent</a></li>
+					<li><a href="#friends">Friends</a></li>
+					<li><a href="#profile">Profile</a></li>
+					<li><a href="#contact">Contact</a></li>
+					<li><a href="#LogIn">LogIn</a></li>
+					<!--<li><a href="#elements">Elements</a></li>-->
+					<div class="fb-login-button" data-max-rows="1" data-size="small" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+				</ul>
+			</nav>
+
+			</header>
+
+
+			<div class="w3-container w3-light-green" style="top: auto">
+				<h1>Recommended</h1>
+			</div>
+		</div>
 	</div>
-</div>
-
-
-
-<!-- Header -->
 
 
 
 
+		<!-- Audio Section -->
+			<div>
+				<h1>track Name1</h1>
+			<audio controls>
+				<source src="audio/03%20Engine%2045.mp3 " type="audio/mpeg">
+			</audio>
+			</div>
+
+		<div>
+			<h1>track Name2</h1>
+				<audio controls>
+				<source src="audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
+				</audio>
+		</div>
+		<div>
+			<h1>track Name3</h1>
+					<audio controls>
+					<source src="audio/07%20White%20Light.mp3 " type="audio/mpeg">
+
+
+			</audio>
+		</div>
+	</div>
 
 
 
 <!--SideBar-->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:10%;left:0; top: 0%;">
 
-
-
-<!-- Wrapper -->
-<div style ="margin-left:10%">
-
-	<div class="w3-container w3-light-green">
-		<h1>Recommended</h1>
+	<div class="logo">
+		<span class="icon fa-diamond"></span>
 	</div>
-	<ul>
-		<li> <a href ="#trackname1" class="w3-bar-item  w3-button" style="color:darkgreen; background-color:white; width: fit-content;">ArtistName - Track Name1</a></li>
-		<li> <a href ="#trackname2" class="w3-button" style="color:darkgreen; background-color:white; width: fit-content;">ArtistName - Track Name2</a></li>
-	</ul>
-	<div id="wrapper">
-
-		<input type = "text" name="search" placeholder="Search...">
 
 
+			<a href="#" class="w3-bar-item w3-button">TraVerse</a>
 
 
-		<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:10%;left: 0; top: 15%;">
-
-			<a href="#profile" class = "w3-container">yourName</a>
-			<a href="#1" class="w3-bar-item w3-button">Playlist 1</a>
-			<a href="#2" class="w3-bar-item w3-button">Playlist 2</a>
-			<a href="#3" class="w3-bar-item w3-button">Playlist 3</a>
-			<a href="#4" class="w3-bar-item w3-button">Playlist 4</a>
-			<a href="#5" class="w3-bar-item w3-button">Playlist 5</a>
+			<p>A music sharing site </p>
 
 
-		</div>
-		<header id="header">
-		<nav>
+	<a href="#" class="w3-bar-item w3-button">Playlist 1</a>
+	<a href="#" class="w3-bar-item w3-button">Playlist 2</a>
+	<a href="#" class="w3-bar-item w3-button">Playlist 3</a>
+	<a href="#" class="w3-bar-item w3-button">Playlist 4</a>
+	<a href="#" class="w3-bar-item w3-button">Playlist 5</a>
+</div>
 
-			<ul>
-				<li><a href="#recent">Recent</a></li>
-				<li><a href="#friends">Friends</a></li>
-				<li><a href="#profile">Profile</a></li>
-				<li><a href="#contact">Contact</a></li>
-				<!--<li><a href="#elements">Elements</a></li>-->
-			</ul>
 
-		</nav>
-		</header>
 		<!-- Main -->
 		<div id="main">
 
@@ -119,7 +126,6 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 				<span class="image main"><img src="/images/pic03.jpg" alt="" /></span>
 				<p>Lorem ipsum dolor sit amet, consectetur et adipiscing elit. Praesent eleifend dignissim arcu, at eleifend sapien imperdiet ac. Aliquam erat volutpat. Praesent urna nisi, fringila lorem et vehicula lacinia quam. Integer sollicitudin mauris nec lorem luctus ultrices. Aliquam libero et malesuada fames ac ante ipsum primis in faucibus. Cras viverra ligula sit amet ex mollis mattis lorem ipsum dolor sit amet.</p>
 			</article>
-
 			<!-- Contact -->
 			<article id="contact">
 				<h2 class="major">Contact</h2>
@@ -404,10 +410,30 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 <div id="bg"></div>
 
 <!-- Scripts -->
+
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/skel.min.js"></script>
 <script src="/assets/js/util.js"></script>
 <script src="/assets/js/main.js"></script>
 
+<script>
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '1596316047096337',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v2.10'
+        });
+        FB.AppEvents.logPageView();
+    };
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
 </body>
 </html>
