@@ -1,19 +1,12 @@
 package com.traverse.data.cloud;
 
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.KeyAttribute;
-import com.amazonaws.services.dynamodbv2.document.PrimaryKey;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ScanRequest;
-import com.amazonaws.services.dynamodbv2.model.ScanResult;
+import com.amazonaws.services.dynamodbv2.document.*;
 import com.traverse.data.User;
-import com.traverse.exceptions.UserDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 
 
 @Component
@@ -28,51 +21,35 @@ public class UserDatabase {
         this.tableName = tableName;
     }
 
-    public void create(User user){
-        try {
-            getUser(user.getUsername());
-        } catch (UserDoesNotExistException e){
-            update(user);
-            return;
-        }
-        throw new IllegalStateException("User already exists.");
+    public boolean doesUserExist(String username){
+        ItemCollection<ScanOutcome> items = dbClient.getDynamoDB().getTable(tableName).scan(new ScanFilter(User.DB_IDENTIFIER_USERNAME).eq(username));
+        return items.iterator().hasNext();
     }
 
-    public void update(User user){
-        dbClient.getMapper().save(user);
+    public String getUserIdFromSocial(String socialMediaID){
+        ItemCollection<ScanOutcome> items = dbClient.getDynamoDB().getTable(tableName).scan(new ScanFilter(User.DB_IDENTIFIER_SOCIAL_MEDIA_ID).eq(socialMediaID));
+
+        Iterator<Item> iterator = items.iterator();
+        if (!iterator.hasNext()){
+            return null;
+        }
+        return iterator.next().getString(User.DB_IDENTIFIER_USER_ID);
+    }
+
+    public String update(User user){
+        return dbClient.getDynamoDB().getTable(tableName).putItem(Item.fromJSON(user.toJson())).toString();
     }
 
     public String getUserJson(String id){
-        Item item = dbClient.getDynamoDB().getTable(tableName).getItem(new PrimaryKey(new KeyAttribute(User.DB_IDENTIFIER_USER_ID, id)));
+        Item item = dbClient.getDynamoDB().getTable(tableName).getItem(User.DB_IDENTIFIER_USER_ID, id);
         if (item == null){
             return null;
         }
         return item.toJSON();
     }
 
-    public User getUser(String username) throws UserDoesNotExistException {
-        Map<String, AttributeValue> expressionAttributeValues = new HashMap<>();
-        expressionAttributeValues.put(":val", new AttributeValue().withS(username));
-        ScanRequest scanRequest = new ScanRequest()
-                .withTableName(tableName)
-                .withFilterExpression(User.DB_IDENTIFIER_USERNAME + " = :val")
-                .withExpressionAttributeValues(expressionAttributeValues);
-        ScanResult result = dbClient.getAmazonDynamoDB().scan(scanRequest);
-
-        if (result.getItems().size() == 0){
-            throw new UserDoesNotExistException("No user under the name: " + username);
-        }
-
-        if (result.getItems().size() > 1){
-            throw new IllegalStateException("Multiple users with the name: " + username);
-        }
-
-        String id = result.getItems().get(0).get(User.DB_IDENTIFIER_USER_ID).getS();
-        return dbClient.getMapper().load(User.class, id);
-    }
-
     public User getUserByID(String id){
-        return dbClient.getMapper().load(User.class, id);
+        return User.fromJSON(getUserJson(id));
     }
 
 

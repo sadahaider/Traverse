@@ -6,13 +6,13 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 -->
 <html>
 <head>
-	<title>TraVerse</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" href="/assets/css/main.css" />
-	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
-	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
+    <title>TraVerse</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 </head>
 
 
@@ -188,6 +188,7 @@ while (!deck.isInOrder()) {
 }
 
 print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
+
 			</section>
 
 			<section>

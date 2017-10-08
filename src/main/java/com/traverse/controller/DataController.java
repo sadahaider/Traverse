@@ -8,16 +8,15 @@ import com.traverse.data.cloud.UserDatabase;
 import com.traverse.exceptions.UserDoesNotExistException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -39,10 +38,20 @@ public class DataController {
         return response;
     }
 
-//    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
-//    public String createUser(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-//        return null;
-//    }
+    @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.GET)
+    public void createUser(@RequestParam("username") String username, @PathVariable("id") String id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        if (userDatabase.doesUserExist(username)){
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " already exists.");
+            return;
+        }
+        User user = userDatabase.getUserByID(id);
+        if (user == null){
+            httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "No user with id: " + id);
+            return;
+        }
+        userDatabase.update(user);
+        httpServletResponse.sendError(HttpServletResponse.SC_OK, "Success");
+    }
 
     @RequestMapping(value = "/audio/{id}", method = RequestMethod.GET)
     public String getAudio(@PathVariable("id") String id, HttpServletResponse httpServletResponse) throws IOException {
