@@ -38,6 +38,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 					<li><a href="#LogIn">LogIn</a></li>
 					<!--<li><a href="#elements">Elements</a></li>-->
 					<div class="fb-login-button" data-max-rows="1" data-size="small" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+
 				</ul>
 			</nav>
 
@@ -277,6 +278,7 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 							</tfoot>
 						</table>
 					</div>
+				</section>
 
 					<h4>Alternate</h4>
 					<div class="table-wrapper">

@@ -1,40 +1,73 @@
 package com.traverse.data;
 
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.net.URL;
+import java.util.UUID;
 
-
+@DynamoDBDocument
+@DynamoDBTable(tableName="traverse_audio")
 public class Audio {
 
     private static final Log logger = LogFactory.getLog(Audio.class);
 
     private String name; //Name for audio clip. Does not need to be unique
     private String uniqueID; //Auto generated when pushed.
-    private String ownerName; //Owner of this audio clip
+    private String ownerID; //Owner of this audio clip
+    private String description;
+    private Long uploadTime;
 
-    private Audio(){} //Do not instantiate. User builder instead.
+    public static final String
+            DB_IDENTIFIER_AUDIO_ID = "audio_id",
+            DB_IDENTIFIER_UPLOAD_TIME = "audio_upload_time",
+            DB_IDENTIFIER_AUDIO_OWNER_ID = "audio_owner_id",
+            DB_IDENTIFIER_AUDIO_DESCRIPTION = "audio_description";
 
+
+    @DynamoDBAttribute(attributeName="audio_name")
     public String getName() {
         return name;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    /**
-     * This method will return null when Audio is initially built.
-     *
-     * In cases where you require unique ID, please call <code>update()</code>
-     * method, which will generate uuid after uploading to database.
-     *
-     * @return Unique identifier of audio clip
-     */
+    @DynamoDBHashKey(attributeName=DB_IDENTIFIER_AUDIO_ID)
     public String getUniqueID() {
         return uniqueID;
     }
+    public void setUniqueID(String uniqueID) {
+        this.uniqueID = uniqueID;
+    }
 
-    public String getOwnerName() {
-        return ownerName;
+    @DynamoDBAttribute(attributeName=DB_IDENTIFIER_AUDIO_OWNER_ID)
+    public String getOwnerID() {
+        return ownerID;
+    }
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
+    }
+
+    @DynamoDBAttribute(attributeName=DB_IDENTIFIER_UPLOAD_TIME)
+    public Long getUploadTime() {
+        return uploadTime;
+    }
+    public void setUploadTime(Long uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    @DynamoDBAttribute(attributeName=DB_IDENTIFIER_AUDIO_DESCRIPTION)
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -62,25 +95,6 @@ public class Audio {
         return null;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Audio audio = (Audio) o;
-
-        if (name != null ? !name.equals(audio.name) : audio.name != null) return false;
-        if (uniqueID != null ? !uniqueID.equals(audio.uniqueID) : audio.uniqueID != null) return false;
-        return ownerName != null ? ownerName.equals(audio.ownerName) : audio.ownerName == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (uniqueID != null ? uniqueID.hashCode() : 0);
-        result = 31 * result + (ownerName != null ? ownerName.hashCode() : 0);
-        return result;
-    }
 
     public static class Builder {
 
@@ -90,20 +104,36 @@ public class Audio {
             audio = new Audio();
         }
 
-        public Builder setName(String name){
+        public Builder withName(String name){
             audio.name = name;
             return this;
         }
 
-        public Builder setOwnerName(String ownerName){
-            audio.ownerName = ownerName;
+        public Builder withOwnerID(String ownerID){
+            audio.ownerID = ownerID;
+            return this;
+        }
+
+        public Builder withDescription(String description){
+            audio.description = description;
             return this;
         }
 
         public Audio build(){
-            if (audio.ownerName == null){
-                throw new IllegalStateException("Audio cannot have null for ownerName");
+            if (audio.ownerID == null){
+                throw new IllegalStateException("Audio cannot have null for ownerID");
             }
+            if (audio.name == null){
+                throw new IllegalStateException("Audio cannot have null for name");
+            }
+            if (audio.name.matches("([^a-z0-9 ])")){
+                throw new IllegalStateException("Audio name is invalid. Can only contain alphanumeric characters and spaces.");
+            }
+            if (audio.name.length() > 64){
+                throw new IllegalStateException("Audio name cannot exceed 100 characters.");
+            }
+            audio.uniqueID = UUID.randomUUID().toString().replace("-","");
+            audio.uploadTime = System.currentTimeMillis();
             return audio;
         }
 

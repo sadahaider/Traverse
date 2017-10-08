@@ -19,3 +19,5 @@ mvn install
 docker build -f Dockerfile -t traverse .
 docker run -p 8080:8080 traverse
 ```
+
+[Live Version](http://traverse.dax.cloud/)
