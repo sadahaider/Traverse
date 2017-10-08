@@ -31,6 +31,11 @@ public class MainController {
         return "index";
     }
 
+    @RequestMapping("/")
+    public String testOAuth() {
+        return "test";
+    }
+
     @RequestMapping("/testusage")
     public @ResponseBody String create() throws UserDoesNotExistException, UsernameException {
         User user = new User.Builder()
@@ -46,12 +51,14 @@ public class MainController {
         user.addAudio(audio);
         audio.setOwnerID(user.getUserID());
 
+        System.out.println("does user exist: " + userDatabase.doesUserExist(user.getUsername()));
+
         audioDatabase.create(audio); //Create audio
         userDatabase.update(user); //Create user
 
-        System.out.println(audioDatabase.getAudio(audio.getUniqueID()));
-        System.out.println(userDatabase.getUser(user.getUsername()));
-
+        System.out.println(audioDatabase.getAudio(audio.getId()));
+        System.out.println(userDatabase.update(user));
+        System.out.println("does user exist: " + userDatabase.doesUserExist(user.getUsername()));
 
         Audio audio2 = new Audio.Builder()
                 .withName("Another Sick Song lmao")
@@ -63,7 +70,7 @@ public class MainController {
         user.addAudio(audio2);
         userDatabase.update(user);
 
-        return "We made it to end lmao";
+        return "We created two objects " + audioDatabase.getAudio(audio.getId()).toJson();
     }
 
 

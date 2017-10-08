@@ -7,10 +7,12 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.traverse.exceptions.UsernameException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * User object
@@ -18,8 +20,6 @@ import java.util.UUID;
  * Holds data pertaining to the user profile.
  *
  */
-@DynamoDBDocument
-@DynamoDBTable(tableName="traverse_users")
 public class User {
 
     private static final Log logger = LogFactory.getLog(User.class);
@@ -28,17 +28,16 @@ public class User {
             DB_IDENTIFIER_USER_ID = "user_id",
             DB_IDENTIFIER_REGISTER_TIME = "register_time",
             DB_IDENTIFIER_AUDIO_LIST= "audio_list",
-            DB_IDENTIFIER_USERNAME = "username";
+            DB_IDENTIFIER_USERNAME = "username",
+            DB_IDENTIFIER_SOCIAL_MEDIA_ID = "social_media_id";
+
 
     private String username; //Unique identifier
-
     private String userID; //Unique identifier key
-
     private Long registerTime;
-
     private List<String> audioIdList;
+    private String socialMediaID;
 
-    @DynamoDBHashKey(attributeName=DB_IDENTIFIER_USER_ID)
     public String getUserID() {
         return userID;
     }
@@ -46,7 +45,6 @@ public class User {
         this.userID = userID;
     }
 
-    @DynamoDBAttribute(attributeName=DB_IDENTIFIER_USERNAME)
     public String getUsername() {
         return username;
     }
@@ -54,7 +52,6 @@ public class User {
         this.username = username;
     }
 
-    @DynamoDBAttribute(attributeName=DB_IDENTIFIER_REGISTER_TIME)
     public Long getRegisterTime() {
         return registerTime;
     }
@@ -62,7 +59,6 @@ public class User {
         this.registerTime = registerTime;
     }
 
-    @DynamoDBAttribute(attributeName=DB_IDENTIFIER_AUDIO_LIST)
     public List<String> getAudioIdList() {
         return audioIdList;
     }
@@ -70,13 +66,44 @@ public class User {
         this.audioIdList = audioIdList;
     }
 
+    public String getSocialMediaID() {
+        return socialMediaID;
+    }
+    public void setSocialMediaID(String socialMediaID) {
+        this.socialMediaID = socialMediaID;
+    }
 
     public void addAudio(Audio audio){
         if (audioIdList == null){
             audioIdList = new ArrayList<>();
         }
-        audioIdList.add(audio.getUniqueID());
+        audioIdList.add(audio.getId());
     }
+
+    public String toJson(){
+        return new JSONObject()
+                .put(DB_IDENTIFIER_USER_ID, userID)
+                .put(DB_IDENTIFIER_REGISTER_TIME, registerTime)
+                .put(DB_IDENTIFIER_AUDIO_LIST, audioIdList)
+                .put(DB_IDENTIFIER_USERNAME, username)
+                .put(DB_IDENTIFIER_SOCIAL_MEDIA_ID, socialMediaID)
+                .toString();
+    }
+
+    public static User fromJSON(String jsonString){
+        if (jsonString == null){
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject(jsonString);
+        return new Builder()
+                .withUserID(jsonObject.getString(DB_IDENTIFIER_USER_ID))
+                .withRegisterTime(jsonObject.getLong(DB_IDENTIFIER_REGISTER_TIME))
+                .withAudioList(jsonObject.getJSONArray(DB_IDENTIFIER_AUDIO_LIST).toList().stream().map(String.class::cast).collect(Collectors.toList()))
+                .withUsername(jsonObject.getString(DB_IDENTIFIER_USERNAME))
+                .withSocialMediaID(jsonObject.getString(DB_IDENTIFIER_SOCIAL_MEDIA_ID))
+                .build();
+    }
+
 
     /**
      *  Updates this User object with database's version.
@@ -101,16 +128,27 @@ public class User {
             return this;
         }
 
-        public User build() throws UsernameException {
-            if (user.username == null){
-                throw new IllegalStateException("User cannot be built without a username");
-            }
-            if (user.username.length() > 12){
-                throw new UsernameException("Username too long.");
-            }
-            if (user.username.length() > 12 || user.username.matches("([^a-z0-9 ])")){
-                throw new UsernameException("Illegal username");
-            }
+        public Builder withUserID(String userID){
+            user.userID = userID;
+            return this;
+        }
+
+        public Builder withRegisterTime(long registerTime){
+            user.registerTime = registerTime;
+            return this;
+        }
+
+        public Builder withAudioList(List<String> audioIdList){
+            user.audioIdList = audioIdList;
+            return this;
+        }
+
+        public Builder withSocialMediaID(String socialMediaID){
+            user.socialMediaID = socialMediaID;
+            return this;
+        }
+
+        public User build(){
             user.registerTime = System.currentTimeMillis();
             user.userID = "user_" + UUID.nameUUIDFromBytes(user.username.getBytes()).toString().replace("-","");
             user.audioIdList = new ArrayList<>();
