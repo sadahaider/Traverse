@@ -42,7 +42,7 @@ public class DataController {
         if (response == null){
             httpServletResponse.sendError(HttpStatus.NOT_FOUND.value(), "User does not exist.");
         }
-        return response;
+        return User.fromJSON(response).toJson();
     }
 
     @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.GET)
