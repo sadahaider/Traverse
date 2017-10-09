@@ -84,7 +84,6 @@ public class AuthenticationController {
 
         authDatabase.set(token, socialMediaID); //Store the login in database for authentication.
         httpServletResponse.addCookie(new Cookie("facebook_token", token));
-        httpServletResponse.sendError(HttpServletResponse.SC_OK);
     }
 
 

@@ -154,9 +154,7 @@ public class User {
         public User build(){
             user.registerTime = System.currentTimeMillis();
             user.userID = "user_" + UUID.nameUUIDFromBytes(user.username.getBytes()).toString().replace("-","");
-            if (user.audioIdList == null) {
-                user.audioIdList = new ArrayList<>();
-            }
+            user.audioIdList = new ArrayList<>();
             return user;
         }
     }
