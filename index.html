@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title> TraVerse Audio Player </title>
+		<link rel="stylesheet" href="main.css"/>
+	</head>
+	<body>
+		<div id="wrapper">
+			<audio id="current_track">
+				<source src="https://upload.wikimedia.org/wikipedia/en/c/cb/Stairway_to_Heaven_3_sections.ogg" type="audio/ogg"/>
+			</audio>
+			<nav>
+				<div id="defaultBar">
+					<div id="progressBar"></div>
+				</div>
+				<div id="buttons">
+					<button type="button" id="playButton"></button>
+					<button type="button" id="muteButton"></button>
+					<span id="currentTime">0:00</span>
+						/<span id="fullDuration">0:00</span>
+				</div>
+			</nav>
+		</div>
+		<script type="text/javascript" src="controls.js"></script>
+	</body>
+</html>
