@@ -4,20 +4,21 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.traverse.data.cloud.AuthDatabase;
-import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpPost;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 
 @RestController
@@ -36,18 +37,11 @@ public class AuthenticationController {
         this.appSecret = appSecret;
     }
 
-    @RequestMapping(value = "/getUser", method = RequestMethod.GET)
-    public String getUser(HttpServletRequest httpServletRequest){
-        for (Cookie cookie : httpServletRequest.getCookies()){
-            if (!cookie.getName().equals("facebook_token")){
-                continue;
-            }
-            String content = cookie.getValue();
-            return new JSONObject()
-                    .put("response", authDatabase.getUserID(content))
-                    .toString();
-        }
-        return null;
+    @RequestMapping(value = "/getUser/{token}", method = RequestMethod.GET)
+    public String getUser(@PathVariable(value = "token") String token){
+        return new JSONObject()
+                .put("response", authDatabase.getUserID(token))
+                .toString();
     }
 
     /**
@@ -60,16 +54,14 @@ public class AuthenticationController {
      * @throws IOException
      */
     @RequestMapping(value = "/facebook", method = RequestMethod.POST)
-    public void callback(@RequestBody String body, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
-        JSONObject requestObject = new JSONObject(body);
-
-        String accessToken = requestObject.getString("accessToken");
-        String userID = requestObject.getString("userID");
+    public void callback(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+        String token = httpServletRequest.getAttribute("accessToken").toString();
+        String socialMediaID = httpServletRequest.getAttribute("userID").toString();
 
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://graph.facebook.com/app?access_token=" + accessToken)
+                .url("https://graph.facebook.com/app?access_token=" + token)
                 .get()
                 .addHeader("cache-control", "no-cache")
                 .addHeader("postman-token", "8ee00117-9fc1-a322-1cc9-3a6f86144dd4")
@@ -80,7 +72,6 @@ public class AuthenticationController {
 
         try {
             jsonObject = new JSONObject(response.body().string());
-            System.out.println(jsonObject.toString());
         } catch (JSONException e){
             httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid response syntax");
             return;
@@ -91,10 +82,8 @@ public class AuthenticationController {
             return;
         }
 
-        authDatabase.set(accessToken, userID); //Store the login in database for authentication.
-        httpServletResponse.addCookie(new Cookie("facebook_token", accessToken));
-        httpServletResponse.sendError(HttpServletResponse.SC_OK);
-        System.out.println("Logged in");
+        authDatabase.set(token, socialMediaID); //Store the login in database for authentication.
+        httpServletResponse.addCookie(new Cookie("facebook_token", token));
     }
 
 

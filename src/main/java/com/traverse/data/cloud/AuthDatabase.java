@@ -21,7 +21,7 @@ public class AuthDatabase {
 
     public static final String DB_IDENTIFIER_TOKEN = "token";
     public static final String DB_IDENTIFIER_SOCIAL_MEDIA_ID = "social_media_id";
-    public static final String DB_IDENTIFIER_USER_ID = "user_id";
+    public static final String DB_IDENTIFIER_USER_ID = "social_media_id";
 
     public AuthDatabase(@Value("${cloud.dynamoDB_table_name_auth}") String tableName) {
         this.tableName = tableName;
@@ -33,7 +33,7 @@ public class AuthDatabase {
                 .put(DB_IDENTIFIER_SOCIAL_MEDIA_ID, socialMediaID)
                 .put(DB_IDENTIFIER_USER_ID, userDatabase.getUserIdFromSocial(socialMediaID));
 
-        if (!jsonObject.has(DB_IDENTIFIER_USER_ID)){
+        if (jsonObject.getString(DB_IDENTIFIER_USER_ID) == null){
             User user = new User.Builder()
                     .withSocialMediaID(socialMediaID)
                     .build();
