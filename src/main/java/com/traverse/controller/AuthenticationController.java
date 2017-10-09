@@ -4,6 +4,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.traverse.data.cloud.AuthDatabase;
+import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpPost;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,11 +36,18 @@ public class AuthenticationController {
         this.appSecret = appSecret;
     }
 
-    @RequestMapping(value = "/getUser/{token}", method = RequestMethod.GET)
-    public String getUser(@PathVariable(value = "token") String token){
-        return new JSONObject()
-                .put("response", authDatabase.getUserID(token))
-                .toString();
+    @RequestMapping(value = "/getUser", method = RequestMethod.GET)
+    public String getUser(HttpServletRequest httpServletRequest){
+        for (Cookie cookie : httpServletRequest.getCookies()){
+            if (!cookie.getName().equals("facebook_token")){
+                continue;
+            }
+            String content = cookie.getValue();
+            return new JSONObject()
+                    .put("response", authDatabase.getUserID(content))
+                    .toString();
+        }
+        return null;
     }
 
     /**
