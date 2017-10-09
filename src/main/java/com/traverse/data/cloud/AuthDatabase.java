@@ -33,7 +33,7 @@ public class AuthDatabase {
                 .put(DB_IDENTIFIER_SOCIAL_MEDIA_ID, socialMediaID)
                 .put(DB_IDENTIFIER_USER_ID, userDatabase.getUserIdFromSocial(socialMediaID));
 
-        if (jsonObject.getString(DB_IDENTIFIER_USER_ID) == null){
+        if (!jsonObject.has(DB_IDENTIFIER_USER_ID)){
             User user = new User.Builder()
                     .withSocialMediaID(socialMediaID)
                     .build();
