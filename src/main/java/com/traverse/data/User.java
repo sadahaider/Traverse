@@ -98,12 +98,8 @@ public class User {
         User.Builder builder = new Builder()
                 .withUserID(jsonObject.getString(DB_IDENTIFIER_USER_ID))
                 .withRegisterTime(jsonObject.getLong(DB_IDENTIFIER_REGISTER_TIME))
-                .withAudioList(jsonObject.getJSONArray(DB_IDENTIFIER_AUDIO_LIST).toList().stream().map(String.class::cast).collect(Collectors.toList()));
-
-
-        if (jsonObject.has(DB_IDENTIFIER_USERNAME)){
-            builder.withUsername(jsonObject.getString(DB_IDENTIFIER_USERNAME));
-        }
+                .withAudioList(jsonObject.getJSONArray(DB_IDENTIFIER_AUDIO_LIST).toList().stream().map(String.class::cast).collect(Collectors.toList()))
+                .withUsername(jsonObject.getString(DB_IDENTIFIER_USERNAME));
 
         if (jsonObject.has(DB_IDENTIFIER_SOCIAL_MEDIA_ID)){
             builder.withSocialMediaID(jsonObject.getString(DB_IDENTIFIER_SOCIAL_MEDIA_ID));
@@ -128,7 +124,6 @@ public class User {
 
         public Builder(){
             user = new User();
-            user.registerTime = 0L;
         }
 
         public Builder withUsername(String username){
@@ -157,13 +152,9 @@ public class User {
         }
 
         public User build(){
-            if (user.registerTime == 0L) {
-                user.registerTime = System.currentTimeMillis();
-            }
-            user.userID = "traverse_user_" + user.socialMediaID;
-            if (user.audioIdList == null) {
-                user.audioIdList = new ArrayList<>();
-            }
+            user.registerTime = System.currentTimeMillis();
+            user.userID = "user_" + UUID.nameUUIDFromBytes(user.username.getBytes()).toString().replace("-","");
+            user.audioIdList = new ArrayList<>();
             return user;
         }
     }

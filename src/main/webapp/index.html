@@ -10,7 +10,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="/assets/css/main.css" />
-	<link rel="stylesheet" href="/assets/css/TraVerse.css"/>
+	<link rel="stylesheet" href="/assets/css/TraVerse.css" />
 	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
@@ -26,29 +26,42 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
             xfbml      : true,
             version    : 'v2.10'
         });
-        FB.getLoginStatus(function(response) {
-			$.ajax({
-				type: 'POST',
-				url: 'oauth/facebook',
-                contentType: 'application/json',
-				dataType:'json',
-				data: JSON.stringify({
-					"accessToken" : response['authResponse']['accessToken'],
-					"userID" : (response['authResponse']['userID'])
-				}),
-				success: function (msg) {
-					alert('wow' + msg);
-				}
-			});
+        FB.getLoginStatus(function(response)
+        {
 
-           if(response.status === 'connected') {
+            $.ajax({
+                type: 'POST',
+                url: 'oauth/facebook',
+                contentType: 'application/json',
+                dataType:'json',
+                data: JSON.stringify({
+                    "accessToken" : response['authResponse']['accessToken'],
+                    "userID" : (response['authResponse']['userID'])
+                }),
+                success: function (msg) {
+                    alert('wow' + msg);
+                }
+            });
+
+
+           if(response.status === 'connected')
+		   {
 		       document.getElementById('status').innerHTML ='we are connected';
+
+		       document.getElementById('SubmitButton').disabled = false;
+
+               document.getElementById('SubmitButton').style.visibility = 'hidden';
+
+
            } else if (response.status === 'not_authorized') {
                document.getElementById('status').innerHTML = 'we are not logged in.';
+               document.getElementById('SubmitButton').disabled = true;
+               document.getElementById('SubmitButton').style.visibility = 'hidden';
            } else {
                document.getElementById('status').innerHTML = 'you are not logged into facebook';
-           }
-
+               document.getElementById('SubmitButton').disabled = true;
+               document.getElementById('SubmitButton').style.visibility = 'hidden';
+                      }
         });
 	};
 
@@ -71,7 +84,14 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 		<div class="w3-bar">
 			<input style ="margin-left: 15%" type = "text" name="search" placeholder="Search..."> </div>
 		<div  class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
-		<button type="button" onclick="" >Upload Song</button>
+
+		<div>
+		<input type="button" id="get_file" value="Upload Song">
+		<input type="file" id="my_file" accept=".wav, .mp3">
+		</div>
+		<div>
+		<button id = "SubmitButton" onclick="addTrack()">Submit</button>
+		</div>
 
 		<!-- Header -->
 		<header id="header">
@@ -103,23 +123,27 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 <!-- Audio Section -->
 <div id="child">
+	<div>
 	<h1>track Name1</h1>
 	<audio controls>
 		<source src="audio/03%20Engine%2045.mp3 " type="audio/mpeg">
 	</audio>
+	</div>
 
-
+	<div>
 	<h1>track Name2</h1>
 	<audio controls>
 		<source src="audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
 	</audio>
-
+</div>
+	<div>
 	<h1>track Name3</h1>
 	<audio controls>
 		<source src="audio/07%20White%20Light.mp3 " type="audio/mpeg">
 
 
 	</audio>
+	</div>
 </div>
 
 
@@ -175,7 +199,18 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 <script src="/assets/js/forAuth.js"></script>
 
 <script>
-
+    document.getElementById('get_file').onclick = function() {
+        document.getElementById('my_file').click();
+    };
+</script>
+<script>
+	function addTrack() {
+        var trackName = document.createElement('div');
+        trackName.innerHTML = "fresh uploadddddddd";
+        document.getElementById("child").appendChild(trackName);
+        var trackAudio = trackName.createElement('audio');
+		document.getElementById("child").appendChild(trackAudio);
+	}
 </script>
 </body>
 </html>
