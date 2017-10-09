@@ -1,16 +1,23 @@
 package com.traverse.controller;
 
 
+import com.amazonaws.services.s3.model.S3Object;
 import com.traverse.data.Audio;
 import com.traverse.data.User;
 import com.traverse.data.cloud.AudioDatabase;
 import com.traverse.data.cloud.UserDatabase;
 import com.traverse.exceptions.UserDoesNotExistException;
+import net.bramp.ffmpeg.FFmpeg;
+import net.bramp.ffmpeg.FFmpegExecutor;
+import net.bramp.ffmpeg.FFprobe;
+import net.bramp.ffmpeg.builder.FFmpegBuilder;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,30 +69,50 @@ public class DataController {
         return response;
     }
 
+    @RequestMapping(value = "/audio/getFile", method = RequestMethod.GET)
+    public void getAudioFile(@RequestParam("audioID") String audioID, HttpServletResponse response) throws IOException {
+
+        Audio audio = audioDatabase.getAudio(audioID);
+
+        if (audio == null){
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        S3Object object = audioDatabase.getAudioS3Object(audioID);
+        response.setHeader("Content-disposition", "attachment; filename=" + audio.getName() + "." + object.getObjectMetadata().getUserMetadata().get("type"));
+        IOUtils.copy(object.getObjectContent(), response.getOutputStream());
+        response.flushBuffer();
+    }
+
     @RequestMapping(value = "/audio/create", method = RequestMethod.POST)
-    public String createAudio(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
+    public String createAudio(
+            @RequestParam(value = "file") MultipartFile file,
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "description") String description,
+            @RequestParam(value = "ownerID") String ownerID,
+            HttpServletRequest httpServletRequest,
+            HttpServletResponse httpServletResponse) throws IOException {
 
-        if (httpServletRequest.getAttribute("name") == null){
-            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No name attribute");
+        if (file.getSize() > 10 * 1000000){
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "File too big");
+            return null;
         }
-        if (httpServletRequest.getAttribute("description") == null){
-            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No description attribute");
-        }
-        if (httpServletRequest.getAttribute("ownerID") == null){
-            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "No ownerID attribute");
-        }
-
-        String userID = httpServletRequest.getAttribute("ownerID").toString();
 
         Audio audio = new Audio.Builder()
-                .withName(httpServletRequest.getAttribute("name").toString())
-                .withDescription(httpServletRequest.getAttribute("description").toString())
-                .withOwnerID(userID).build();
+                .withName(name)
+                .withDescription(description)
+                .withOwnerID(ownerID).build();
 
-        User user = userDatabase.getUserByID(userID); //Lets check if the user exists.
+        User user = userDatabase.getUserByID(ownerID); //Lets check if the user exists.
 
         if (user == null){
-            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid userID: No such user");
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "User does not exist.");
+            return null;
+        }
+
+        if (!audioDatabase.upload(file, audio)){
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid file. Only mp3 and wav accepted.");
             return null;
         }
 
@@ -96,8 +123,22 @@ public class DataController {
         userDatabase.update(user);      //Update user
 
 
-        return new JSONObject().put("result", "success").toString();
+        return audio.toJson();
     }
 
+
+
+
+    /**
+     *
+     * @param startingMillis time in milliseconds search audio by upload time.
+     * @param httpServletResponse
+     * @return json object result.
+     * @throws IOException
+     */
+    @RequestMapping(value = "/audio/list", method = RequestMethod.GET)
+    public String getAudioList(@RequestParam(value = "id", required = false) Long startingMillis, HttpServletResponse httpServletResponse) throws IOException {
+        return audioDatabase.list(50, startingMillis != null ? startingMillis : -1);
+    }
 
 }

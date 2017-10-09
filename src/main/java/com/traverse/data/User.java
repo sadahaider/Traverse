@@ -95,13 +95,16 @@ public class User {
             return null;
         }
         JSONObject jsonObject = new JSONObject(jsonString);
-        return new Builder()
+        User.Builder builder = new Builder()
                 .withUserID(jsonObject.getString(DB_IDENTIFIER_USER_ID))
                 .withRegisterTime(jsonObject.getLong(DB_IDENTIFIER_REGISTER_TIME))
                 .withAudioList(jsonObject.getJSONArray(DB_IDENTIFIER_AUDIO_LIST).toList().stream().map(String.class::cast).collect(Collectors.toList()))
-                .withUsername(jsonObject.getString(DB_IDENTIFIER_USERNAME))
-                .withSocialMediaID(jsonObject.getString(DB_IDENTIFIER_SOCIAL_MEDIA_ID))
-                .build();
+                .withUsername(jsonObject.getString(DB_IDENTIFIER_USERNAME));
+
+        if (jsonObject.has(DB_IDENTIFIER_SOCIAL_MEDIA_ID)){
+            builder.withSocialMediaID(jsonObject.getString(DB_IDENTIFIER_SOCIAL_MEDIA_ID));
+        }
+        return builder.build();
     }
 
 

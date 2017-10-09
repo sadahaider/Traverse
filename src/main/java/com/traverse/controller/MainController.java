@@ -31,7 +31,7 @@ public class MainController {
         return "index";
     }
 
-    @RequestMapping("/")
+    @RequestMapping("/test")
     public String testOAuth() {
         return "test";
     }

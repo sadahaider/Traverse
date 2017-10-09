@@ -10,6 +10,11 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CreateBucketRequest;
+import com.amazonaws.services.s3.model.GetBucketLocationRequest;
 import com.traverse.data.Audio;
 import com.traverse.data.User;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,37 +29,53 @@ public class DBClient {
     private DynamoDB dynamoDB;
     private DynamoDBMapper mapper;
     private AmazonDynamoDB amazonDynamoDB;
+    private AmazonS3 s3client;
+    private String bucketName;
 
     public DBClient(
             @Value("${cloud.aws_access_key_id}") String awsAccessKeyID,
             @Value("${cloud.aws_secret_access_key}") String awsSecretAccessKey,
             @Value("${cloud.dynamoDB_table_name_users}") String userTableName,
             @Value("${cloud.dynamoDB_table_name_audio}") String audioTableName,
-            @Value("${cloud.dynamoDB_table_name_auth}") String authTableName) {
+            @Value("${cloud.dynamoDB_table_name_auth}") String authTableName,
+            @Value("${cloud.s3_bucket}") String bucketName) {
+
+        AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(new AWSCredentials() {
+            @Override
+            public String getAWSAccessKeyId() {
+                return awsAccessKeyID;
+            }
+
+            @Override
+            public String getAWSSecretKey() {
+                return awsSecretAccessKey;
+            }
+        });
 
         amazonDynamoDB = AmazonDynamoDBClientBuilder
                 .standard()
                 .withRegion(Regions.US_EAST_1)
-                .withCredentials(new AWSStaticCredentialsProvider(new AWSCredentials() {
-                    @Override
-                    public String getAWSAccessKeyId() {
-                        return awsAccessKeyID;
-                    }
-
-                    @Override
-                    public String getAWSSecretKey() {
-                        return awsSecretAccessKey;
-                    }
-                }))
+                .withCredentials(credentialsProvider)
                 .build();
+
+        s3client = AmazonS3ClientBuilder
+                .standard()
+                .withRegion(Regions.US_EAST_1)
+                .withCredentials(credentialsProvider)
+                .build();
+
         dynamoDB = new DynamoDB(amazonDynamoDB);
         mapper = new DynamoDBMapper(amazonDynamoDB);
+        this.bucketName = bucketName;
+
+
+        if (!s3client.doesBucketExistV2(bucketName)){
+            s3client.createBucket(new CreateBucketRequest(bucketName));
+        }
 
         createTable(userTableName, User.DB_IDENTIFIER_USER_ID, amazonDynamoDB, null);
         createAudioTable(audioTableName, amazonDynamoDB);
-
-//        createTable(authTableName, AuthDatabase.DB_IDENTIFIER_TOKEN, amazonDynamoDB, "expiration");
-        createTable(authTableName, AuthDatabase.DB_IDENTIFIER_TOKEN, amazonDynamoDB, null);
+        createTable(authTableName, AuthDatabase.DB_IDENTIFIER_TOKEN, amazonDynamoDB, null); //set as null
     }
 
     public DynamoDBMapper getMapper() {
@@ -65,8 +86,16 @@ public class DBClient {
         return dynamoDB;
     }
 
+    public AmazonS3 getS3client() {
+        return s3client;
+    }
+
     public AmazonDynamoDB getAmazonDynamoDB() {
         return amazonDynamoDB;
+    }
+
+    public String getBucketName() {
+        return bucketName;
     }
 
     /**
