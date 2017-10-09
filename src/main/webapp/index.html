@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<!--
+Dimension by HTML5 UP
+html5up.net | @ajlkn
+Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+	<title>TraVerse</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="/assets/css/main.css" />
+	<link rel="stylesheet" href="/assets/css/TraVerse.css" />
+	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
+</head>
+
+
+<body>
+<script>
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '1596316047096337',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v2.10'
+        });
+        FB.getLoginStatus(function(response)
+        {
+            JSON.stringify(response['authResponse']['accessToken'])
+           if(response.status === 'connected')
+		   {
+		       document.getElementById('status').innerHTML ='we are connected';
+           } else if (response.status === 'not_authorized') {
+               document.getElementById('status').innerHTML = 'we are not logged in.';
+           } else {
+               document.getElementById('status').innerHTML = 'you are not logged into facebook';
+           }
+        });
+	};
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<!-- Wrapper -->
+<div id="status"></div>
+<div id="wrapper">
+
+	<!--div style ="margin-left:-65%"-->
+
+	<div id="parent" class="w3-top">
+		<div class="w3-bar">
+			<input style ="margin-left: 15%" type = "text" name="search" placeholder="Search..."> </div>
+		<div  class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+		<button type="button" onclick="" >Upload Song</button>
+
+		<!-- Header -->
+		<header id="header">
+
+
+			<nav>
+				<ul>
+					<!-- <li><a href="#recent">Recent</a></li>
+                        <li><a href="#friends">Friends</a></li>
+                        <li><a href="#profile">Profile</a></li>
+                        <li><a href="#contact">Contact</a></li> -->
+					<!-- <li><a href="#LogIn">LogIn</a> </li> -->
+					<!--<li><a href="#elements">Elements</a></li>-->
+
+				</ul>
+			</nav>
+
+		</header>
+
+
+		<div class="w3-container w3-light-green" style="top: auto" style="text-align: center">
+			<h1>TraVerse through music</h1>
+		</div>
+
+
+
+
+
+
+<!-- Audio Section -->
+<div id="child">
+	<h1>track Name1</h1>
+	<audio controls>
+		<source src="audio/03%20Engine%2045.mp3 " type="audio/mpeg">
+	</audio>
+
+
+	<h1>track Name2</h1>
+	<audio controls>
+		<source src="audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
+	</audio>
+
+	<h1>track Name3</h1>
+	<audio controls>
+		<source src="audio/07%20White%20Light.mp3 " type="audio/mpeg">
+
+
+	</audio>
+</div>
+
+
+</div>
+
+
+</div>
+
+</div>
+
+<!--SideBar-->
+<!--  <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:10%;left:0; top: 0%;">
+
+  <div class="logo">
+      <span class="icon fa-diamond"></span>
+  </div>
+
+
+  <a href="#" class="w3-bar-item w3-button">TraVerse</a>
+
+
+  <p>A music sharing site </p>
+
+
+  <a href="#" class="w3-bar-item w3-button">Playlist 1</a>
+  <a href="#" class="w3-bar-item w3-button">Playlist 2</a>
+  <a href="#" class="w3-bar-item w3-button">Playlist 3</a>
+  <a href="#" class="w3-bar-item w3-button">Playlist 4</a>
+  <a href="#" class="w3-bar-item w3-button">Playlist 5</a>
+</div>
+                              -->
+
+<!-- Main -->
+<div id="main">
+
+	<!-- Footer -->
+	<footer id="footer">
+		<p class="copyright">&copy; Untitled. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+	</footer>
+
+</div>
+
+<!-- BG -->
+<div id="bg"></div>
+
+<!-- Scripts -->
+
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/skel.min.js"></script>
+<script src="/assets/js/util.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/jquery-3.2.1.js"></script>
+<script src="/assets/js/forAuth.js"></script>
+
+<script>
+
+</script>
+</body>
+</html>
