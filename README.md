@@ -14,6 +14,9 @@ Online open source music sharing service
 * Make sure your java compiler is set to 1.8
     * update-alternatives --config javac
 
+
+Must change facebook application ID in index.html(line 24) under FB.init to a valid app ID, (can be obtained at developers.facebook.com)
+
 Create your applications.properties file in src\main\resources
 
 Fill in cloud.aws_access_key_id and cloud.aws_secret_access_key with your AWS IAM key. 
@@ -64,5 +67,6 @@ mvn install
 docker build -f Dockerfile -t traverse .
 docker run -p 8080:8080 traverse
 ```
+
 
 [Live Version](http://traverse.dax.cloud/)
