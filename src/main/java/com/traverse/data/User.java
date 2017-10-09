@@ -128,6 +128,7 @@ public class User {
 
         public Builder(){
             user = new User();
+            user.registerTime = 0L;
         }
 
         public Builder withUsername(String username){
@@ -156,7 +157,9 @@ public class User {
         }
 
         public User build(){
-            user.registerTime = System.currentTimeMillis();
+            if (user.registerTime == 0L) {
+                user.registerTime = System.currentTimeMillis();
+            }
             user.userID = "traverse_user_" + user.socialMediaID;
             if (user.audioIdList == null) {
                 user.audioIdList = new ArrayList<>();

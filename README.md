@@ -46,7 +46,18 @@ spring.social.facebook.appSecret=
 
 ```
 
+If you have existing dynamoDB tables that conflict with the table names in your AWS console, please delete them. We have updated our database schema since last build.
+```
+cloud.dynamoDB_table_name_users=traverse_users
+cloud.dynamoDB_table_name_audio=traverse_audio
+cloud.dynamoDB_table_name_auth=traverse_auth
+```
+
 After that is finished, you can begin to build and deploy.
+
+If this is the first time you are deploying, Spring Boot initialization will take a couple minutes.
+This is because upon first initialization, the server will need to build the dynamoDB tables and S3 Buckets and wait for them to be active on Amazon servers.
+Any calls made before then will not work.
 
 ```
 mvn install
