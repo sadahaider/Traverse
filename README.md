@@ -14,7 +14,7 @@ Online open source music sharing service
 * Make sure your java compiler is set to 1.8
     * update-alternatives --config javac
 
-Create your applications.properties file in src\main\resources
+Create your applications.properties file in src\main\resources         
 
 Fill in cloud.aws_access_key_id and cloud.aws_secret_access_key with your AWS IAM key. 
 Make sure your IAM key has Administrator Access.
