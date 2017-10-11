@@ -59,10 +59,52 @@ If this is the first time you are deploying, Spring Boot initialization will tak
 This is because upon first initialization, the server will need to build the dynamoDB tables and S3 Buckets and wait for them to be active on Amazon servers.
 Any calls made before then will not work.
 
+
 ```
 mvn install
 docker build -f Dockerfile -t traverse .
 docker run -p 8080:8080 traverse
 ```
 
-[Live Version](http://traverse.dax.cloud/)
+
+## Testing backend functionality
+
+### Login
+- First, use facebook button to login. 
+
+![](https://i.imgur.com/bMcwR6F.png)
+
+### Getting your user ID
+- A GET call to this url will now provide your user ID after you login with facebook. 
+Make sure you are in the same browser because we will be using your cookies to determine this information.
+    - GET /oauth/getUser
+    
+![](https://i.imgur.com/9R9X30L.png)
+
+
+### Grabbing your user info using user  ID
+- You can grab the user's information using this ID.
+    - GET /data/user/{userID}
+    
+![](https://i.imgur.com/5o85RGa.png)
+
+
+### Uploading Audio
+- Since we don't have a front upload audio button, you will need a HTTP testing client to test the POST call. 
+I recommend postman so you are able to follow the screenshot below. 
+    - POST /data/audio/create
+        - name: song name
+        - ownerID: your userID
+        - description: description of the song
+        - file: your song file.
+    - Returns: The Audio data in json format.
+
+![](https://i.imgur.com/Vg01D76.png)
+
+
+### Grabbing Audio
+- You can now check if the song is uploaded by grabbing the audio.
+    - GET data/audio/getFile?audioID={audioID}
+        - audioID: The ID of the audio.
+
+![](https://i.imgur.com/avt0PNb.png)
