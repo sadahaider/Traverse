@@ -23,6 +23,8 @@ We will be creating and modifying dynamodb and tables which will require those a
 Fill in spring.social.facebook.appId and spring.social.facebook.appSecret with your Facebook developer app key.
 You can create an app over on developers.facebook.com
 
+Also make sure to replace the facebook app id to yours in the FB.init method in index.html for oauth login.
+
 ```
 spring.mvc.view.suffix=.html
 
