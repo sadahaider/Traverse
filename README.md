@@ -72,7 +72,7 @@ docker run -p 8080:8080 traverse
 ## Testing backend functionality
 
 ### Login
-- First, use facebook button to login. 
+- First, use facebook button to login. After Logging in, you would need to refresh the page to make sure **"we are connected"** is up. Once that message is up, you have successfully logged in.
 
 ![](https://i.imgur.com/bMcwR6F.png)
 
