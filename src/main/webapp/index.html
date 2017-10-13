@@ -10,7 +10,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="/assets/css/main.css" />
-	<link rel="stylesheet" href="/assets/css/TraVerse.css" />
+	<link rel="stylesheet" href="/assets/css/TraVerse.css"/>
 	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
@@ -26,32 +26,32 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
             xfbml      : true,
             version    : 'v2.10'
         });
-        FB.getLoginStatus(function(response)
-        {
 
-            $.ajax({
-                type: 'POST',
-                url: 'oauth/facebook',
+
+        FB.getLoginStatus(function(response) {
+			$.ajax({
+				type: 'POST',
+				url: 'oauth/facebook',
                 contentType: 'application/json',
-                dataType:'json',
-                data: JSON.stringify({
-                    "accessToken" : response['authResponse']['accessToken'],
-                    "userID" : (response['authResponse']['userID'])
-                }),
-                success: function (msg) {
-                    alert('wow' + msg);
-                }
-            });
+				dataType:'json',
+				data: JSON.stringify({
+					"accessToken" : response['authResponse']['accessToken'],
+					"userID" : (response['authResponse']['userID'])
+				}),
+				success: function (msg) {
 
+				}
+			});
 
-           if(response.status === 'connected')
-		   {
+           if(response.status === 'connected') {
+
 		       document.getElementById('status').innerHTML ='we are connected';
            } else if (response.status === 'not_authorized') {
                document.getElementById('status').innerHTML = 'we are not logged in.';
            } else {
                document.getElementById('status').innerHTML = 'you are not logged into facebook';
            }
+
         });
 	};
 
