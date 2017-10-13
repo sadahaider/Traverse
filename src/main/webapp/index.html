@@ -26,6 +26,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
             xfbml      : true,
             version    : 'v2.10'
         });
+
+
         FB.getLoginStatus(function(response) {
 			$.ajax({
 				type: 'POST',
@@ -42,6 +44,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 			});
 
            if(response.status === 'connected') {
+
 		       document.getElementById('status').innerHTML ='we are connected';
            } else if (response.status === 'not_authorized') {
                document.getElementById('status').innerHTML = 'we are not logged in.';
@@ -71,7 +74,13 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 		<div class="w3-bar">
 			<input style ="margin-left: 15%" type = "text" name="search" placeholder="Search..."> </div>
 		<div  class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
-		<button type="button" onclick="" >Upload Song</button>
+
+		<div type="button">
+			<a type="button" href="#songUpload">Upload Track</a>
+		</div>
+		<!--div>
+		<button onclick="addTrack()">Submit</button>
+		</div-->
 
 		<!-- Header -->
 		<header id="header">
@@ -81,8 +90,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 				<ul>
 					<!-- <li><a href="#recent">Recent</a></li>
                         <li><a href="#friends">Friends</a></li>
-                        <li><a href="#profile">Profile</a></li>
-                        <li><a href="#contact">Contact</a></li> -->
+                        <li><a href="#profile">Profile</a></li -->
+                        <!--li><a href="#contact">Contact</a></li-->
 					<!-- <li><a href="#LogIn">LogIn</a> </li> -->
 					<!--<li><a href="#elements">Elements</a></li>-->
 
@@ -101,25 +110,33 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 
 
+
 <!-- Audio Section -->
 <div id="child">
+	<div>
+		<button onclick="listTracks()">Show database tracks</button>
+	</div>
+	<div>
 	<h1>track Name1</h1>
 	<audio controls>
 		<source src="audio/03%20Engine%2045.mp3 " type="audio/mpeg">
 	</audio>
+	</div>
 
-
+	<div>
 	<h1>track Name2</h1>
 	<audio controls>
 		<source src="audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
 	</audio>
-
+</div>
+	<div>
 	<h1>track Name3</h1>
 	<audio controls>
 		<source src="audio/07%20White%20Light.mp3 " type="audio/mpeg">
 
 
 	</audio>
+	</div>
 </div>
 
 
@@ -154,7 +171,29 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 <!-- Main -->
 <div id="main">
+	<article id="songUpload" style=position:absolute>
+		<form action="http://localhost:8080/#">
+		<h2 class="major">Upload your Track</h2>
 
+			<div class="field half first">
+				<label for="name">Name</label>
+				<input type="text" name="name" id="name" />
+			</div>
+			<div class="field half">
+				<label for="my_file">Your File</label>
+				<input type="file" id="my_file" accept=".wav, .mp3">
+			</div>
+			<div class="field">
+				<label for="message">Track Description</label>
+				<textarea name="message" id="message" rows="4"></textarea>
+			</div>
+
+			<ul class="actions">
+				<li><button onclick=addTrack()>Submit</button></li>
+				<li><input type="reset" value="Reset" /></li>
+			</ul>
+		</form>
+	</article>
 	<!-- Footer -->
 	<footer id="footer">
 		<p class="copyright">&copy; Untitled. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
@@ -175,7 +214,62 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 <script src="/assets/js/forAuth.js"></script>
 
 <script>
+    document.getElementById('get_file').onclick = function() {
+        document.getElementById('my_file').click();
+    };
+</script>
+<script>
+	function addTrack() {
+        var ownerID;
+		var grabID = {
+		    "url": "http://localhost:8080/data/audio/ 	",
+			"method": "GET",
+			"data": String
+		};
+        $.ajax(grabID).done(function (response) {
+             ownerID = response;
+        });
+        var form = new FormData();
+        form.append("name", document.getElementById('name'));
+        form.append("ownerID",ownerID);
+        form.append("description", document.getElementById('message'));
+        form.append("file", document.getElementById('my_file'));
 
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "http://localhost:8080/data/audio/create",
+            "method": "POST",
+            "headers": {
+                "cache-control": "no-cache",
+                "postman-token": "5bf9a76d-129a-cbec-a4c4-744dc374ecf3"
+            },
+            "processData": false,
+            "contentType": false,
+            "mimeType": "multipart/form-data",
+            "data": form
+        };
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+        });
+    }
+        /*var trackName = document.createElement('div');
+        trackName.innerHTML = "fresh uploadddddddd";
+        document.getElementById("child").appendChild(trackName);
+        var trackAudio = document.createElement('audio');
+        trackAudio.getAsFile();
+		document.getElementById("child").appendChild(trackAudio);
+	}
+</script>
+<script>
+	function listTracks() {
+        $.ajax({
+            type: 'GET',
+            url: '/audio/list',
+			dataType:'text/html'
+        });
+	}
 </script>
 </body>
 </html>
