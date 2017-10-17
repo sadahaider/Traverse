@@ -1,6 +1,5 @@
 package com.traverse;
 
-import com.traverse.data.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
