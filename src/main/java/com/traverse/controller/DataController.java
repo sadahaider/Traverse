@@ -25,6 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+
 
 @RestController
 @RequestMapping(value = {"/data"})
@@ -42,7 +45,7 @@ public class DataController {
         if (response == null){
             httpServletResponse.sendError(HttpStatus.NOT_FOUND.value(), "User does not exist.");
         }
-        return response;
+        return User.fromJSON(response).toJson();
     }
 
     @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.GET)
@@ -127,18 +130,16 @@ public class DataController {
     }
 
 
-
-
     /**
      *
-     * @param startingMillis time in milliseconds search audio by upload time.
+     * @param startingMillis upload unix time in milliseconds for search to start from.
      * @param httpServletResponse
      * @return json object result.
      * @throws IOException
      */
-    @RequestMapping(value = "/audio/list", method = RequestMethod.GET)
-    public String getAudioList(@RequestParam(value = "id", required = false) Long startingMillis, HttpServletResponse httpServletResponse) throws IOException {
-        return audioDatabase.list(50, startingMillis != null ? startingMillis : -1);
+    @RequestMapping(value = "/audio/list", method = RequestMethod.GET, produces = "application/json")
+    public String getAudioList(@RequestParam(value = "time", required = false) Long startingMillis, HttpServletResponse httpServletResponse) throws IOException {
+        return audioDatabase.list(20, startingMillis != null ? startingMillis : -1);
     }
 
 }

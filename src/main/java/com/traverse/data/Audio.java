@@ -22,6 +22,11 @@ public class Audio {
     private Long uploadTime;
     private Long uploadDate;
 
+    public Audio() {
+        uploadTime = -1L;
+        uploadDate = -1L;
+    }
+
     public static final String
             DB_IDENTIFIER_AUDIO_NAME = "audio_name",
             DB_IDENTIFIER_AUDIO_ID = "audio_id",
@@ -152,9 +157,12 @@ public class Audio {
             audio.id = UUID.randomUUID().toString().replace("-","");
 
             long currentTime = System.currentTimeMillis();
-
-            audio.uploadTime = currentTime % TimeUtils.MILLIS_IN_DAY;
-            audio.uploadDate = currentTime - audio.uploadTime;
+            if (audio.uploadTime == -1) {
+                audio.uploadTime = currentTime % TimeUtils.MILLIS_IN_DAY;
+            }
+            if (audio.getUploadDate() == -1) {
+                audio.uploadDate = currentTime - audio.uploadTime;
+            }
             return audio;
         }
 

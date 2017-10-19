@@ -20,10 +20,14 @@ Fill in cloud.aws_access_key_id and cloud.aws_secret_access_key with your AWS IA
 Make sure your IAM key has Administrator Access.
 We will be creating and modifying dynamodb and tables which will require those access permissions.
 
-Fill in spring.social.facebook.appId and spring.social.facebook.appSecret with your Facebook developer app key.
-You can create an app over on developers.facebook.com
 
-Also make sure to replace the facebook app id to yours in the FB.init method in index.html for oauth login.
+#### Facebook Login
+- Fill in spring.social.facebook.appId and spring.social.facebook.appSecret with your Facebook developer app key.
+You can create an app over on developers.facebook.com. Make sure you set your callback url to the correct address
+on Facebook.
+- Also make sure to replace the facebook app id to yours in the FB.init method in index.html for oauth login.
+
+Max file size accepted for upload is 20MB, although you can adjust this value in application.properties.
 
 ```
 spring.mvc.view.suffix=.html
