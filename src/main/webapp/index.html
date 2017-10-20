@@ -9,9 +9,10 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 	<title>TraVerse</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" href="/assets/css/main.css" />
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
 	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="/assets/css/player.css">
 	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 
 	<style>
@@ -84,12 +85,13 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 			<input style ="margin-left: 15%" type = "text" name="search" placeholder="Search..."> </div>
 		<div  class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
 
-		<div type="button">
-			<a type="button" href="#songUpload">Upload Track</a>
+		<div>
+			<a type="button" href="#songUpload"><button style="background-color:#8bc34a">Upload Song</button></a>
 		</div>
 		<!--div>
 		<button onclick="addTrack()">Submit</button>
 		</div-->
+
 
 		<!-- Header -->
 		<header id="header">
@@ -114,7 +116,22 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 			<h1>TraVerse through music</h1>
 		</div>
 
-
+		<div id="playerWrapper">
+			<audio id="current_track">
+				<source id="trackSource"  src="https://upload.wikimedia.org/wikipedia/en/c/cb/Stairway_to_Heaven_3_sections.ogg" type="audio/mp3"/>
+			</audio>
+			<nav id="playerNav">
+				<div id="defaultBar">
+					<div id="progressBar"></div>
+				</div>
+				<div id="buttons">
+					<button type="button" id="playButton"></button>
+					<button type="button" id="muteButton"></button>
+					<span id="currentTime">0:00</span>
+					/<span id="fullDuration">0:00</span>
+				</div>
+			</nav>
+		</div>
 
 
 
@@ -125,7 +142,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 	<div>
 		<button onclick="listTracks()">Show database tracks</button>
 	</div>
-	<div>
+	<!--div>
 	<h1>track Name1</h1>
 	<audio controls>
 		<source src="audio/03%20Engine%2045.mp3 " type="audio/mpeg">
@@ -146,7 +163,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 	</audio>
 	</div>
-</div>
+</div-->
 
 
 </div>
@@ -180,7 +197,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 <!-- Main -->
 <div id="main">
-	<article id="songUpload" style=position:absolute>
+	<article id="songUpload" style="position:fixed; bottom:0; top:10%; height:300px">
 		<form action="http://localhost:8080/#" class="trackForm">
 		<h2 class="major">Upload your Track</h2>
 
@@ -200,6 +217,15 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 			<ul class="actions">
 				<li><button>Submit</button></li>
 				<li><input type="reset" value="Reset" /></li>
+			</ul>
+		</form>
+	</article>
+	<article id="createUsername" style="position:fixed; bottom:0; top:0; height:300px">
+		<form action="http://localhost:8080/#" class="usernameForm">
+			Please create a username:<br>
+			<input type="text" name="username" id="username"><br>
+			<ul class="actions">
+				<li><button>Create Name</button></li>
 			</ul>
 		</form>
 	</article>
@@ -255,7 +281,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 				async : false
             };
             $.ajax(grabID).done(function (response) {
-                ownerID = JSON.stringify(response['response']);
+                ownerID = (response['response']);
+                console.log(ownerID);
 
             });
 
@@ -276,8 +303,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 
             var settings = {
-                "async": true,
-                "crossDomain": true,
+                "async": false,
+                "crossDomain": false,
                 "url": '/data/audio/create',
                 "method": "POST",
                 "headers": {
@@ -291,7 +318,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
             };
 
             $.ajax(settings).done(function (response) {
-                console.log(response);
+
 
 
 
@@ -305,29 +332,73 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 </script>
 <script>
+    var audioID;
 	function listTracks() {
-       var fullList =  $.ajax({
+
+      $.ajax({
             type: 'GET',
             url: '/data/audio/list',
-			dataType:'json'
+			dataType:'json',
+		   global:false,
+		   async:false,
+		  success: function(response){
+
+              var count = 0;
+              for (var key=0; key <10; key++) {
+                  var newdiv = document.createElement('div');
+                  //console.log(JSON.parse(fullList));
+                  console.log(JSON.stringify(response['results'][key]));
+                  var playButton = document.createElement('button');
+                  playButton.setAttribute("class", "trackElement");
+                  var artistText = document.createElement('h1');
+                  artistText.innerText = "Artist Name Here -";
+                  var trackNameText = document.createElement('h1');
+                  trackNameText.innerText = JSON.stringify(response['results'][key]['audio_name']);
+                  newdiv.appendChild(artistText);
+                  newdiv.appendChild(trackNameText);
+                  newdiv.appendChild(playButton);
+                  document.getElementById("child").appendChild(newdiv);
+                  audioID =JSON.stringify(response['results'][key]['audio_id']);
+
+              }
+		  }
 
 
         });
 
-			//var listAsString = JSON.stringify(fullList);
+
            // var length = Object.keys(listAsString).length;
            // console.log(length);
-            var count = 0;
-            for (var key=0; key <12; key++) {
-                var newdiv = document.createElement('div');
-                var sendButton = document.createElement('button');
-                sendButton.setAttribute("id", "child");
-                newdiv.appendChild(sendButton);
-                document.getElementById("child").appendChild(newdiv);
-            }
+
+
 
 
 	}
+
+    $(function () {
+    $('#main').on('submit', '.usernameForm', function(event){
+        event.preventDefault();
+        console.log('check');
+		$.ajax({
+            type: 'GET',
+            url: '/data/user/{id}/setUsername',
+            dataType:'string',
+			data: {
+                "username": document.getElementById('username')
+			}
+		})
+	})
+	});
+
+
+    $(function () {
+        $('#child').on('click', '.trackElement', function(event){
+            event.preventDefault();
+            console.log('arewethereyet');
+            document.getElementById("trackSource").setAttribute("src","http://localhost8080/data/audio/getFile?audioID="+audioID);
+	})
+	})
 </script>
+<script type="text/javascript" src="/assets/js/controls.js"></script>
 </body>
 </html>

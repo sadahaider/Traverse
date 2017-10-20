@@ -1,4 +1,4 @@
-var track = document.getElementById('current_track');
+var track = document.getElementById('trackSource');
 
 var playButton = document.getElementById('playButton');
 var muteButton = document.getElementById('muteButton');
