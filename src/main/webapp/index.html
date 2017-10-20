@@ -10,10 +10,19 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<link rel="stylesheet" href="/assets/css/main.css" />
-	<link rel="stylesheet" href="/assets/css/TraVerse.css"/>
 	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
+
+	<style>
+		.tracklist
+		{
+			overflow:scroll;
+			height:1050px;
+			position:relative;
+
+		}
+	</style>
 </head>
 
 
@@ -43,7 +52,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 				}
 			});
 
-           if(response.status === 'connected') {
+           /*if(response.status === 'connected') {
 
 		       document.getElementById('status').innerHTML ='we are connected';
            } else if (response.status === 'not_authorized') {
@@ -51,7 +60,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
            } else {
                document.getElementById('status').innerHTML = 'you are not logged into facebook';
            }
-
+*/
         });
 	};
 
@@ -112,7 +121,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 
 <!-- Audio Section -->
-<div id="child">
+<div id="child"  class="tracklist">
 	<div>
 		<button onclick="listTracks()">Show database tracks</button>
 	</div>
@@ -172,7 +181,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 <!-- Main -->
 <div id="main">
 	<article id="songUpload" style=position:absolute>
-		<form action="http://localhost:8080/#">
+		<form action="http://localhost:8080/#" class="trackForm">
 		<h2 class="major">Upload your Track</h2>
 
 			<div class="field half first">
@@ -180,8 +189,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 				<input type="text" name="name" id="name" />
 			</div>
 			<div class="field half">
-				<label for="my_file">Your File</label>
-				<input type="file" id="my_file" accept=".wav, .mp3">
+				<label for="thefile">Your File</label>
+				<input type="file" id="thefile"  accept=".wav, .mp3">
 			</div>
 			<div class="field">
 				<label for="message">Track Description</label>
@@ -189,7 +198,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 			</div>
 
 			<ul class="actions">
-				<li><button onclick=addTrack()>Submit</button></li>
+				<li><button>Submit</button></li>
 				<li><input type="reset" value="Reset" /></li>
 			</ul>
 		</form>
@@ -219,56 +228,105 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
     };
 </script>
 <script>
-	function addTrack() {
-        var ownerID;
-		var grabID = {
-		    "url": "http://localhost:8080/data/audio/ 	",
-			"method": "GET",
-			"data": String
-		};
-        $.ajax(grabID).done(function (response) {
-             ownerID = response;
-        });
-        var form = new FormData();
-        form.append("name", document.getElementById('name'));
-        form.append("ownerID",ownerID);
-        form.append("description", document.getElementById('message'));
-        form.append("file", document.getElementById('my_file'));
 
-        var settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": "http://localhost:8080/data/audio/create",
-            "method": "POST",
-            "headers": {
-                "cache-control": "no-cache",
-                "postman-token": "5bf9a76d-129a-cbec-a4c4-744dc374ecf3"
-            },
-            "processData": false,
-            "contentType": false,
-            "mimeType": "multipart/form-data",
-            "data": form
-        };
 
-        $.ajax(settings).done(function (response) {
-            console.log(response);
-        });
-    }
+
+
+
         /*var trackName = document.createElement('div');
         trackName.innerHTML = "fresh uploadddddddd";
         document.getElementById("child").appendChild(trackName);
         var trackAudio = document.createElement('audio');
         trackAudio.getAsFile();
 		document.getElementById("child").appendChild(trackAudio);
-	}
+		*/
+
+    $(function () {
+        $('#main').on('submit', '.trackForm', function(event){
+            event.preventDefault();
+			console.log("hello");
+
+
+            var ownerID;
+            var grabID = {
+                "url": "/oauth/getUser",
+                "method": "GET",
+				"dataType" : 'json',
+				async : false
+            };
+            $.ajax(grabID).done(function (response) {
+                ownerID = JSON.stringify(response['response']);
+
+            });
+
+
+
+
+
+
+                var thefile = document.getElementById('thefile').files[0];
+                var form = new FormData();
+                form.append("file", thefile);
+                form.append("name", document.getElementById('name').value);
+                console.log(document.getElementById('name').value);
+                form.append("description", document.getElementById('message').value);
+                console.log(document.getElementById('message').value);
+                form.append("ownerID", ownerID);
+            	console.log(ownerID);
+
+
+            var settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": '/data/audio/create',
+                "method": "POST",
+                "headers": {
+                    "cache-control": "no-cache"
+
+                },
+                "processData": false,
+                "contentType": false,
+                "mimeType": "multipart/form-data",
+                "data": form
+            };
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+
+
+
+
+            });
+        })
+    });
+
+
+
+
 </script>
 <script>
 	function listTracks() {
-        $.ajax({
+       var fullList =  $.ajax({
             type: 'GET',
-            url: '/audio/list',
-			dataType:'text/html'
+            url: '/data/audio/list',
+			dataType:'json'
+
+
         });
+
+			//var listAsString = JSON.stringify(fullList);
+           // var length = Object.keys(listAsString).length;
+           // console.log(length);
+            var count = 0;
+            for (var key=0; key <12; key++) {
+                var newdiv = document.createElement('div');
+                var sendButton = document.createElement('button');
+                sendButton.setAttribute("id", "child");
+                newdiv.appendChild(sendButton);
+                document.getElementById("child").appendChild(newdiv);
+            }
+
+
 	}
 </script>
 </body>
