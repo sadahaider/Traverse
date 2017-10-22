@@ -106,6 +106,7 @@ html {
   -ms-text-size-adjust: 100%;
   -ms-overflow-style: scrollbar;
   -webkit-tap-highlight-color: transparent;
+  overflow:hidden;
 }
 
 @-ms-viewport {
@@ -125,6 +126,7 @@ body {
   color: #212529;
   text-align: left;
   background-color: #fff;
+  overflow: hidden;
 }
 
 [tabindex="-1"]:focus {
