@@ -147,7 +147,9 @@
 <!-- Articles/Forms start here -->
 <div id="main">
 <article id="songUpload" style="position:fixed; bottom:0; top:10%; height:300px">
+
   <form action="/#" class="trackForm">
+
     <h2 class="major">Upload your Track</h2>
 
     <div class="field half first">
@@ -170,7 +172,9 @@
   </form>
 </article>
 <article id="createUsername" style="position:fixed; bottom:0; top:0; height:300px">
+
   <form action="/#" class="usernameForm">
+
     Please create a username:<br>
     <input type="text" name="username" id="username"><br>
     <ul class="actions">
@@ -182,7 +186,9 @@
 
       <!--Help Page -->
   <article id="Help" style="position:fixed; bottom:0; top:0; height:900px; background: black">
+
     <form action="/#" class="Help">
+
       <ul>
         <h2><br><br> Getting started with TraVerse!</h2><br>
         <p> TraVerse is an open source music sharing site. It can be used by anyone to upload their own music to share with other users.<br></p>
@@ -253,11 +259,13 @@
 
 
 <script>
+    var ownerID;
+    var ownerIDstring;
     $(function () {
         $('#main').on('submit', '.trackForm', function(event){
-            event.preventDefault();
+            //event.preventDefault();
             console.log("hello");
-            var ownerID;
+
             var grabID = {
                 "url": "/oauth/getUser",
                 "method": "GET",
@@ -266,7 +274,8 @@
             };
             $.ajax(grabID).done(function (response) {
                 ownerID = (response['response']);
-                console.log(ownerID);
+                ownerIDstring = JSON.stringify(response['response']);
+                console.log(ownerIDstring);
             });
             var thefile = document.getElementById('thefile').files[0];
             var form = new FormData();
@@ -294,12 +303,39 @@
             });
         })
     });
+
+    $(function () {
+
+        $('#main').on('submit', '.usernameForm', function(event){
+            event.preventDefault();
+            console.log(ownerIDstring);
+            $.ajax({
+                type: 'POST',
+                url: '/data/user/'+ownerIDstring+'/setUsername',
+                dataType:'string',
+                data: {
+                    "username": document.getElementById('username').value
+                }
+            })
+        })
+    });
 </script>
 <script>
     var audioID;
-
+    var uploaderUsername;
 
 	window.onload = function listTracks() {
+	    console.log(ownerIDstring);
+        $.ajax({
+            type: 'GET',
+            url: '/data/user/'+ownerIDstring,
+            dataType:'json',
+            success: function(response){
+        uploaderUsername = JSON.stringify(response['username']);
+            }
+        });
+
+
 
       $.ajax({
             type: 'GET',
@@ -321,10 +357,12 @@
                   playButton.setAttribute("class", "trackElement");
                   playButton.setAttribute("id", audioID);
                   playButton.setAttribute('onclick','sendToPlayer(this.id)');
-                  var artistText = document.createElement('h1');
-                  artistText.innerText = "Artist Name Here -";
-                  var trackNameText = document.createElement('h1');
-                  trackNameText.innerText = JSON.stringify(response['results'][key]['audio_name']);
+                  var artistText = document.createElement('h3');
+                  //artistText.innerText =uploaderUsername;
+                  var trackNameText = document.createElement('h3');
+                  var trackName = JSON.stringify(response['results'][key]['audio_name']);
+                  trackName=trackName.replace(/^"(.*)"$/, '$1');
+                  trackNameText.innerText =trackName;
 
                   newdiv.appendChild(artistText);
                   newdiv.appendChild(trackNameText);
@@ -340,22 +378,8 @@
         });
 
 
-    }
-    $(function () {
+    };
 
-    $('#main').on('submit', '.usernameForm', function(event){
-        event.preventDefault();
-        console.log('check');
-		$.ajax({
-            type: 'GET',
-            url: '/data/user/{id}/setUsername',
-            dataType:'string',
-			data: {
-                "username": document.getElementById('username')
-			}
-		})
-	})
-	});
 
 
     function sendToPlayer (trackID) {
@@ -365,7 +389,9 @@
 
     
 
+
             document.getElementById("trackSource").setAttribute("src","/data/audio/getFile?audioID="+trackID);
+
         document.getElementById("current_track").pause();
         document.getElementById("current_track").load();
         document.getElementById("current_track").play();
