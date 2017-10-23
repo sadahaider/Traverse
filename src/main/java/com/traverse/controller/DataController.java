@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +24,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
 
 
 @RestController
@@ -42,10 +50,10 @@ public class DataController {
         if (response == null){
             httpServletResponse.sendError(HttpStatus.NOT_FOUND.value(), "User does not exist.");
         }
-        return response;
+        return User.fromJSON(response).toJson();
     }
 
-    @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.POST)
     public void createUser(@RequestParam("username") String username, @PathVariable("id") String id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
         if (userDatabase.doesUserExist(username)){
             httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " already exists.");
@@ -56,6 +64,14 @@ public class DataController {
             httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "No user with id: " + id);
             return;
         }
+
+
+        if (username.length() > 12 || !username.matches("^[a-zA-Z0-9]*$")){
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " is a invalid username");
+            return;
+        }
+
+        user.setUsername(username);
         userDatabase.update(user);
         httpServletResponse.sendError(HttpServletResponse.SC_OK, "Success");
     }
@@ -69,7 +85,7 @@ public class DataController {
         return response;
     }
 
-    @RequestMapping(value = "/audio/getFile", method = RequestMethod.GET)
+    @RequestMapping(value = "/audio/getFile", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
     public void getAudioFile(@RequestParam("audioID") String audioID, HttpServletResponse response) throws IOException {
 
         Audio audio = audioDatabase.getAudio(audioID);
@@ -85,19 +101,36 @@ public class DataController {
         response.flushBuffer();
     }
 
-    @RequestMapping(value = "/audio/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/audio/getImage", method = RequestMethod.GET)
+    public void getAudioImage(@RequestParam("audioID") String audioID, HttpServletResponse response) throws IOException {
+
+        Audio audio = audioDatabase.getAudio(audioID);
+
+        if (audio == null){
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        try {
+            S3Object object = audioDatabase.getAudioS3ObjectImage(audioID);
+            response.setHeader("Content-disposition", "attachment; filename=" + audio.getName() + "." + object.getObjectMetadata().getUserMetadata().get("type"));
+            IOUtils.copy(object.getObjectContent(), response.getOutputStream());
+            response.flushBuffer();
+        } catch (Exception e){
+            System.out.println("Error getting image and replying...");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(value = "/audio/create", method = RequestMethod.POST, produces = "application/json")
     public String createAudio(
             @RequestParam(value = "file") MultipartFile file,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile,
             @RequestParam(value = "name") String name,
             @RequestParam(value = "description") String description,
             @RequestParam(value = "ownerID") String ownerID,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws IOException {
-
-        if (file.getSize() > 10 * 1000000){
-            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "File too big");
-            return null;
-        }
 
         Audio audio = new Audio.Builder()
                 .withName(name)
@@ -116,6 +149,13 @@ public class DataController {
             return null;
         }
 
+        if (imageFile != null && !imageFile.isEmpty()) {
+            if (!audioDatabase.uploadImage(imageFile, audio)) {
+                httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid image file. Only png and jpg accepted");
+                return null;
+            }
+        }
+
         //Audio checks here.
 
         user.addAudio(audio);
@@ -127,18 +167,16 @@ public class DataController {
     }
 
 
-
-
     /**
      *
-     * @param startingMillis time in milliseconds search audio by upload time.
+     * @param startingMillis upload unix time in milliseconds for search to start from.
      * @param httpServletResponse
      * @return json object result.
      * @throws IOException
      */
-    @RequestMapping(value = "/audio/list", method = RequestMethod.GET)
-    public String getAudioList(@RequestParam(value = "id", required = false) Long startingMillis, HttpServletResponse httpServletResponse) throws IOException {
-        return audioDatabase.list(50, startingMillis != null ? startingMillis : -1);
+    @RequestMapping(value = "/audio/list", method = RequestMethod.GET, produces = "application/json")
+    public String getAudioList(@RequestParam(value = "time", required = false) Long startingMillis, HttpServletResponse httpServletResponse) throws IOException {
+        return audioDatabase.list(20, startingMillis != null ? startingMillis : -1);
     }
 
 }

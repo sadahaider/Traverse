@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Iterator;
 
 
@@ -73,6 +74,27 @@ public class AudioDatabase {
         return true;
     }
 
+    public boolean uploadImage(MultipartFile multipartFile, Audio audio) throws IOException {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+
+        if (extension == null){
+            return false;
+        }
+
+
+
+        if (!Arrays.asList("jpeg", "jpg", "png").contains(extension.toLowerCase())){
+            return false;
+        }
+
+        objectMetadata.addUserMetadata("type", extension);
+        dbClient.getS3client().putObject(new PutObjectRequest(dbClient.getBucketName(), "image/" + audio.getId(), multipartFile.getInputStream(), objectMetadata));
+        return true;
+    }
+
+
+
     public String getURL(String audioID) throws IOException {
         return dbClient.getS3client().getUrl(dbClient.getBucketName(), audioID).toString();
     }
@@ -81,10 +103,15 @@ public class AudioDatabase {
         return dbClient.getS3client().getObject(new GetObjectRequest(dbClient.getBucketName(), audioID));
     }
 
+    public S3Object getAudioS3ObjectImage(String audioID) throws IOException {
+        return dbClient.getS3client().getObject(new GetObjectRequest(dbClient.getBucketName(), "image/" + audioID));
+    }
+
+
     /**
      *
      * @param limit limit to search for.
-     * @param startingMillis
+     * @param startingMillis starting time to search
      * @return
      */
     public String list(int limit, long startingMillis){
@@ -97,25 +124,29 @@ public class AudioDatabase {
         Index index = table.getIndex(Audio.DB_IDENTIFIER_UPLOAD_DATE);
 
         long
-                currentTime = System.currentTimeMillis(),
-                today = currentTime - (currentTime % TimeUtils.MILLIS_IN_DAY),
-                offsetDays = 0;
+                startingUnixTime = startingMillis != -1 ? startingMillis : System.currentTimeMillis(),
+                startingDate = startingUnixTime - (startingUnixTime % TimeUtils.MILLIS_IN_DAY),
+                offsetDays = startingMillis == -1 ? -1 : 0;
 
-        if (startingMillis != -1){
-            offsetDays = (currentTime - startingMillis)/TimeUtils.MILLIS_IN_DAY;
-        }
-
-        while (results < limit && offsetDays < 30){
-            long dayMillis = today - (offsetDays++ * TimeUtils.MILLIS_IN_DAY);
-            QuerySpec spec = new QuerySpec().withHashKey(Audio.DB_IDENTIFIER_UPLOAD_DATE, dayMillis).withScanIndexForward(false);
-
+        while (results < limit && offsetDays < 14){
+            long dateInMillis = startingDate - (offsetDays * TimeUtils.MILLIS_IN_DAY);
+            QuerySpec spec = new QuerySpec().withHashKey(Audio.DB_IDENTIFIER_UPLOAD_DATE, dateInMillis).withScanIndexForward(false);
             ItemCollection<QueryOutcome> items = index.query(spec);
             Iterator<Item> iter = items.iterator();
 
             while (iter.hasNext() && results < limit) {
-                jsonArray.put(new JSONObject(iter.next().toJSON()));
+                Item item = iter.next();
+                Audio audio = Audio.fromJSON(item.toJSON());
+                long uploadTimeUnix = audio.getUploadTime() + audio.getUploadDate();
+                if (startingMillis != -1 && uploadTimeUnix >= startingMillis){
+                    System.out.println("Song: " + audio.getName() + " was uploaded " + uploadTimeUnix + " vs " + startingMillis);
+                    continue;
+                }
+                jsonArray.put(new JSONObject(item.toJSON()));
                 results++;
             }
+
+            offsetDays++;
         }
 
         return object.put("results", jsonArray).toString();
