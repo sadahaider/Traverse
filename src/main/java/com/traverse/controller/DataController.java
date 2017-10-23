@@ -48,7 +48,7 @@ public class DataController {
         return User.fromJSON(response).toJson();
     }
 
-    @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.POST)
     public void createUser(@RequestParam("username") String username, @PathVariable("id") String id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
         if (userDatabase.doesUserExist(username)){
             httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " already exists.");
