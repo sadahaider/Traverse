@@ -31,6 +31,7 @@ function playOrPause() {
 		playButton.style.backgroundImage = 'url(\'https://i.imgur.com/MM40XBm.png\')';
 		window.clearInterval(updateTime);
 	} else {
+		track.load();
 		track.play();
 		playButton.style.backgroundImage = 'url(\'https://i.imgur.com/1fKTLk2.png\')';
 		updateTime = setInterval(update, 500);
@@ -38,7 +39,7 @@ function playOrPause() {
 }
 
 function muteOrUnmute() {
-	console.log("mom");
+	//console.log("mom");
 	if(track.muted == true) {
 		track.muted = false;
 		muteButton.style.backgroundImage = 'url(\'https://i.imgur.com/uMzAZfa.png\')';

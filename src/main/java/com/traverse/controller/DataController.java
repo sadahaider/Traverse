@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,7 @@ import java.util.stream.Stream;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_OCTET_STREAM_VALUE;
 
 
 @RestController
@@ -83,7 +85,7 @@ public class DataController {
         return response;
     }
 
-    @RequestMapping(value = "/audio/getFile", method = RequestMethod.GET)
+    @RequestMapping(value = "/audio/getFile", method = RequestMethod.GET, produces = APPLICATION_OCTET_STREAM_VALUE)
     public void getAudioFile(@RequestParam("audioID") String audioID, HttpServletResponse response) throws IOException {
 
         Audio audio = audioDatabase.getAudio(audioID);
@@ -109,16 +111,21 @@ public class DataController {
             return;
         }
 
-        S3Object object = audioDatabase.getAudioS3ObjectImage(audioID);
-        response.setHeader("Content-disposition", "attachment; filename=" + audio.getName() + "." + object.getObjectMetadata().getUserMetadata().get("type"));
-        IOUtils.copy(object.getObjectContent(), response.getOutputStream());
-        response.flushBuffer();
+        try {
+            S3Object object = audioDatabase.getAudioS3ObjectImage(audioID);
+            response.setHeader("Content-disposition", "attachment; filename=" + audio.getName() + "." + object.getObjectMetadata().getUserMetadata().get("type"));
+            IOUtils.copy(object.getObjectContent(), response.getOutputStream());
+            response.flushBuffer();
+        } catch (Exception e){
+            System.out.println("Error getting image and replying...");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "/audio/create", method = RequestMethod.POST, produces = "application/json")
     public String createAudio(
             @RequestParam(value = "file") MultipartFile file,
-            @RequestParam(value = "image") MultipartFile imageFile,
+            @RequestParam(value = "image", required = false) MultipartFile imageFile,
             @RequestParam(value = "name") String name,
             @RequestParam(value = "description") String description,
             @RequestParam(value = "ownerID") String ownerID,
@@ -142,9 +149,11 @@ public class DataController {
             return null;
         }
 
-        if (!audioDatabase.uploadImage(imageFile, audio)){
-            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid image file. Only png and jpg accepted");
-            return null;
+        if (imageFile != null && !imageFile.isEmpty()) {
+            if (!audioDatabase.uploadImage(imageFile, audio)) {
+                httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid image file. Only png and jpg accepted");
+                return null;
+            }
         }
 
         //Audio checks here.
