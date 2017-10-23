@@ -118,7 +118,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 		<div id="playerWrapper">
 			<audio id="current_track">
-				<source id="trackSource"  src="https://upload.wikimedia.org/wikipedia/en/c/cb/Stairway_to_Heaven_3_sections.ogg" type="audio/mp3"/>
+				<source id="trackSource"  src="http://localhost:8080/data/audio/getFile?audioID=43036625d13e4334ac887ba2c71daedc"/>
 			</audio>
 			<nav id="playerNav">
 				<div id="defaultBar">
@@ -333,7 +333,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 </script>
 <script>
     var audioID;
-	function listTracks() {
+
+	window.onload = function listTracks() {
 
       $.ajax({
             type: 'GET',
@@ -345,20 +346,26 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
               var count = 0;
               for (var key=0; key <10; key++) {
+                  audioID =JSON.stringify(response['results'][key]['audio_id']);
+                  audioID=audioID.replace(/^"(.*)"$/, '$1');//this line removes quotes from the audio_id string
                   var newdiv = document.createElement('div');
-                  //console.log(JSON.parse(fullList));
-                  console.log(JSON.stringify(response['results'][key]));
+                  $("newdiv").data("audioID",audioID);
+                  var storedID = $("newdiv").data("audioID");
+                  //console.log(JSON.stringify(response['results'][key]));
                   var playButton = document.createElement('button');
                   playButton.setAttribute("class", "trackElement");
+                  playButton.setAttribute("id", audioID);
+                  playButton.setAttribute('onclick','sendToPlayer(this.id)');
                   var artistText = document.createElement('h1');
                   artistText.innerText = "Artist Name Here -";
                   var trackNameText = document.createElement('h1');
                   trackNameText.innerText = JSON.stringify(response['results'][key]['audio_name']);
+
                   newdiv.appendChild(artistText);
                   newdiv.appendChild(trackNameText);
                   newdiv.appendChild(playButton);
                   document.getElementById("child").appendChild(newdiv);
-                  audioID =JSON.stringify(response['results'][key]['audio_id']);
+
 
               }
 		  }
@@ -391,13 +398,19 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 	});
 
 
-    $(function () {
-        $('#child').on('click', '.trackElement', function(event){
+    function sendToPlayer (trackID) {
+
             event.preventDefault();
+
             console.log('arewethereyet');
-            document.getElementById("trackSource").setAttribute("src","http://localhost8080/data/audio/getFile?audioID="+audioID);
-	})
-	})
+            document.getElementById("trackSource").setAttribute("src","http://localhost:8080/data/audio/getFile?audioID="+trackID);
+        document.getElementById("current_track").pause();
+        document.getElementById("current_track").load();
+        document.getElementById("current_track").play();
+
+
+	}
+
 </script>
 <script type="text/javascript" src="/assets/js/controls.js"></script>
 </body>
