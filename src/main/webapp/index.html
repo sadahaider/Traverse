@@ -1,33 +1,51 @@
-<!DOCTYPE HTML>
-<!--
-Dimension by HTML5 UP
-html5up.net | @ajlkn
-Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-	<title>TraVerse</title>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-	<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-	<!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie9.css" /><![endif]-->
-	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-	<link rel="stylesheet" href="/assets/css/player.css">
-	<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 
-	<style>
-		.tracklist
-		{
-			overflow:scroll;
-			height:1050px;
-			position:relative;
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-		}
-	</style>
+  <title>TraVerse</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="css/logo-nav.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="/assets/css/player.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+  <noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
+
+  <style>
+    .tracklist
+    {
+      overflow:scroll;
+      height:1050px;
+      position:relative;
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+   </style>
+
+
+
+
 </head>
 
+<body style="margin-left: 1%">
 
-<body>
+
+
+
 <script>
     window.fbAsyncInit = function() {
         FB.init({
@@ -36,35 +54,29 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
             xfbml      : true,
             version    : 'v2.10'
         });
-
-
         FB.getLoginStatus(function(response) {
-			$.ajax({
-				type: 'POST',
-				url: 'oauth/facebook',
+            $.ajax({
+                type: 'POST',
+                url: 'oauth/facebook',
                 contentType: 'application/json',
-				dataType:'json',
-				data: JSON.stringify({
-					"accessToken" : response['authResponse']['accessToken'],
-					"userID" : (response['authResponse']['userID'])
-				}),
-				success: function (msg) {
-
-				}
-			});
-
-           /*if(response.status === 'connected') {
-
-		       document.getElementById('status').innerHTML ='we are connected';
-           } else if (response.status === 'not_authorized') {
-               document.getElementById('status').innerHTML = 'we are not logged in.';
-           } else {
-               document.getElementById('status').innerHTML = 'you are not logged into facebook';
-           }
-*/
+                dataType:'json',
+                data: JSON.stringify({
+                    "accessToken" : response['authResponse']['accessToken'],
+                    "userID" : (response['authResponse']['userID'])
+                }),
+                success: function (msg) {
+                }
+            });
+            /*if(response.status === 'connected') {
+                document.getElementById('status').innerHTML ='we are connected';
+            } else if (response.status === 'not_authorized') {
+                document.getElementById('status').innerHTML = 'we are not logged in.';
+            } else {
+                document.getElementById('status').innerHTML = 'you are not logged into facebook';
+            }
+ */
         });
-	};
-
+    };
     (function(d, s, id){
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) {return;}
@@ -74,64 +86,45 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
     }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<!-- Wrapper -->
-<div id="status"></div>
-<div id="wrapper">
-
-	<!--div style ="margin-left:-65%"-->
-
-	<div id="parent" class="w3-top">
-		<div class="w3-bar">
-			<input style ="margin-left: 15%" type = "text" name="search" placeholder="Search..."> </div>
-		<div  class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
-
-		<div>
-			<a type="button" href="#songUpload"><button style="background-color:#8bc34a">Upload Song</button></a>
-		</div>
-		<!--div>
-		<button onclick="addTrack()">Submit</button>
-		</div-->
 
 
-		<!-- Header -->
-		<header id="header">
 
 
-			<nav>
-				<ul>
-					<!-- <li><a href="#recent">Recent</a></li>
-                        <li><a href="#friends">Friends</a></li>
-                        <li><a href="#profile">Profile</a></li -->
-                        <!--li><a href="#contact">Contact</a></li-->
-					<!-- <li><a href="#LogIn">LogIn</a> </li> -->
-					<!--<li><a href="#elements">Elements</a></li>-->
+<!-- Top Bar -->
+<div id = "parent">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <div  class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="false"></div>
+    </a>
+        <div style="margin-left: 15%">
+      <h1 style="text-align: center">TraVerse</h1>
+        </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#songUpload">Upload Song</a>
+        </li>
 
-				</ul>
-			</nav>
+        <li class="nav-item">
+          <a class="nav-link" href="#Help">Help</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+</div>
 
-		</header>
 
 
-		<div class="w3-container w3-light-green" style="top: auto" style="text-align: center">
-			<h1>TraVerse through music</h1>
-		</div>
-
-		<div id="playerWrapper">
-			<audio id="current_track">
-				<source id="trackSource"  src="http://localhost:8080/data/audio/getFile?audioID=43036625d13e4334ac887ba2c71daedc"/>
-			</audio>
-			<nav id="playerNav">
-				<div id="defaultBar">
-					<div id="progressBar"></div>
-				</div>
-				<div id="buttons">
-					<button type="button" id="playButton"></button>
-					<button type="button" id="muteButton"></button>
-					<span id="currentTime">0:00</span>
-					/<span id="fullDuration">0:00</span>
-				</div>
-			</nav>
-		</div>
 
 
 
@@ -139,107 +132,109 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 <!-- Audio Section -->
 <div id="child"  class="tracklist">
-	<div>
-		<button onclick="listTracks()">Show database tracks</button>
-	</div>
-	<!--div>
-	<h1>track Name1</h1>
-	<audio controls>
-		<source src="audio/03%20Engine%2045.mp3 " type="audio/mpeg">
-	</audio>
-	</div>
-
-	<div>
-	<h1>track Name2</h1>
-	<audio controls>
-		<source src="audio/04%20Slipping%20Away.mp3 " type="audio/mpeg">
-	</audio>
-</div>
-	<div>
-	<h1>track Name3</h1>
-	<audio controls>
-		<source src="audio/07%20White%20Light.mp3 " type="audio/mpeg">
-
-
-	</audio>
-	</div>
-</div-->
-
-
-</div>
-
-
-</div>
-
-</div>
-
-<!--SideBar-->
-<!--  <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:10%;left:0; top: 0%;">
-
-  <div class="logo">
-      <span class="icon fa-diamond"></span>
+  <div>
+    <button onclick="listTracks()">Show database tracks</button>
   </div>
 
 
-  <a href="#" class="w3-bar-item w3-button">TraVerse</a>
-
-
-  <p>A music sharing site </p>
-
-
-  <a href="#" class="w3-bar-item w3-button">Playlist 1</a>
-  <a href="#" class="w3-bar-item w3-button">Playlist 2</a>
-  <a href="#" class="w3-bar-item w3-button">Playlist 3</a>
-  <a href="#" class="w3-bar-item w3-button">Playlist 4</a>
-  <a href="#" class="w3-bar-item w3-button">Playlist 5</a>
 </div>
-                              -->
 
-<!-- Main -->
+
+
+
+
+
+<!-- Articles/Forms start here -->
 <div id="main">
-	<article id="songUpload" style="position:fixed; bottom:0; top:10%; height:300px">
-		<form action="http://localhost:8080/#" class="trackForm">
-		<h2 class="major">Upload your Track</h2>
+<article id="songUpload" style="position:fixed; bottom:0; top:10%; height:300px">
+  <form action="http://localhost:8080/#" class="trackForm">
+    <h2 class="major">Upload your Track</h2>
 
-			<div class="field half first">
-				<label for="name">Name</label>
-				<input type="text" name="name" id="name" />
-			</div>
-			<div class="field half">
-				<label for="thefile">Your File</label>
-				<input type="file" id="thefile"  accept=".wav, .mp3">
-			</div>
-			<div class="field">
-				<label for="message">Track Description</label>
-				<textarea name="message" id="message" rows="4"></textarea>
-			</div>
+    <div class="field half first">
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" />
+    </div>
+    <div class="field half">
+      <label for="thefile">Your File</label>
+      <input type="file" id="thefile"  accept=".wav, .mp3">
+    </div>
+    <div class="field">
+      <label for="message">Track Description</label>
+      <textarea name="message" id="message" rows="4"></textarea>
+    </div>
 
-			<ul class="actions">
-				<li><button>Submit</button></li>
-				<li><input type="reset" value="Reset" /></li>
-			</ul>
-		</form>
-	</article>
-	<article id="createUsername" style="position:fixed; bottom:0; top:0; height:300px">
-		<form action="http://localhost:8080/#" class="usernameForm">
-			Please create a username:<br>
-			<input type="text" name="username" id="username"><br>
-			<ul class="actions">
-				<li><button>Create Name</button></li>
-			</ul>
-		</form>
-	</article>
-	<!-- Footer -->
-	<footer id="footer">
-		<p class="copyright">&copy; Untitled. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
-	</footer>
+    <ul class="actions">
+      <li><button>Submit</button></li>
+      <li><input type="reset" value="Reset" /></li>
+    </ul>
+  </form>
+</article>
+<article id="createUsername" style="position:fixed; bottom:0; top:0; height:300px">
+  <form action="http://localhost:8080/#" class="usernameForm">
+    Please create a username:<br>
+    <input type="text" name="username" id="username"><br>
+    <ul class="actions">
+      <li><button>Create Name</button></li>
+    </ul>
+  </form>
+</article>
 
+
+      <!--Help Page -->
+  <article id="Help" style="position:fixed; bottom:0; top:0; height:900px; background: black">
+    <form action="http://localhost:8080/#" class="Help">
+      <ul>
+        <h2><br><br> Getting started with TraVerse!</h2><br>
+        <p> TraVerse is an open source music sharing site. It can be used by anyone to upload their own music to share with other users.<br></p>
+        <p> Any issues with the site can be reported to our <a href="https://github.com/itsdax/Traverse/issues">Github.</a><br></p>
+
+        <p>First start by signing in to facebook using our button located in the top left corner.<br></p>
+
+        <p> To Upload a song click the Upload song button in the top right of the home page.<br></p>
+         <p> To play a song simply click on the desired track you wish to play and then the controls for the songs will be located at the bottom of the screen within the audio player.</p>
+      </ul>
+    </form>
+  </article>
 </div>
 
-<!-- BG -->
-<div id="bg"></div>
 
-<!-- Scripts -->
+
+
+
+
+
+        <!-- Bottom Bar that contains the player -->
+  <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-bottom">
+    <div class="container">
+      <!-- Player Code -->
+      <div id="playerWrapper">
+        <audio id="current_track">
+          <source id="trackSource"  src="https://upload.wikimedia.org/wikipedia/en/c/cb/Stairway_to_Heaven_3_sections.ogg" type="audio/mp3"/>
+        </audio>
+        <nav id="playerNav">
+          <div id="defaultBar">
+            <div id="progressBar"></div>
+          </div>
+          <div id="buttons">
+            <button type="button" id="playButton"></button>
+            <button type="button" id="muteButton"></button>
+            <span id="currentTime">0:00</span>
+            /<span id="fullDuration">0:00</span>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </nav>
+
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+
 
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/skel.min.js"></script>
@@ -247,61 +242,41 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/jquery-3.2.1.js"></script>
 <script src="/assets/js/forAuth.js"></script>
+<script type="text/javascript" src="controls.js"></script>
+
 
 <script>
     document.getElementById('get_file').onclick = function() {
         document.getElementById('my_file').click();
     };
 </script>
+
+
 <script>
-
-
-
-
-
-        /*var trackName = document.createElement('div');
-        trackName.innerHTML = "fresh uploadddddddd";
-        document.getElementById("child").appendChild(trackName);
-        var trackAudio = document.createElement('audio');
-        trackAudio.getAsFile();
-		document.getElementById("child").appendChild(trackAudio);
-		*/
-
     $(function () {
         $('#main').on('submit', '.trackForm', function(event){
             event.preventDefault();
-			console.log("hello");
-
-
+            console.log("hello");
             var ownerID;
             var grabID = {
                 "url": "/oauth/getUser",
                 "method": "GET",
-				"dataType" : 'json',
-				async : false
+                "dataType" : 'json',
+                async : false
             };
             $.ajax(grabID).done(function (response) {
                 ownerID = (response['response']);
                 console.log(ownerID);
-
             });
-
-
-
-
-
-
-                var thefile = document.getElementById('thefile').files[0];
-                var form = new FormData();
-                form.append("file", thefile);
-                form.append("name", document.getElementById('name').value);
-                console.log(document.getElementById('name').value);
-                form.append("description", document.getElementById('message').value);
-                console.log(document.getElementById('message').value);
-                form.append("ownerID", ownerID);
-            	console.log(ownerID);
-
-
+            var thefile = document.getElementById('thefile').files[0];
+            var form = new FormData();
+            form.append("file", thefile);
+            form.append("name", document.getElementById('name').value);
+            console.log(document.getElementById('name').value);
+            form.append("description", document.getElementById('message').value);
+            console.log(document.getElementById('message').value);
+            form.append("ownerID", ownerID);
+            console.log(ownerID);
             var settings = {
                 "async": false,
                 "crossDomain": false,
@@ -309,30 +284,20 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
                 "method": "POST",
                 "headers": {
                     "cache-control": "no-cache"
-
                 },
                 "processData": false,
                 "contentType": false,
                 "mimeType": "multipart/form-data",
                 "data": form
             };
-
             $.ajax(settings).done(function (response) {
-
-
-
-
-
             });
         })
     });
-
-
-
-
 </script>
 <script>
     var audioID;
+
 
 	window.onload = function listTracks() {
 
@@ -371,18 +336,13 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 		  }
 
 
+
         });
 
 
-           // var length = Object.keys(listAsString).length;
-           // console.log(length);
-
-
-
-
-	}
-
+    }
     $(function () {
+
     $('#main').on('submit', '.usernameForm', function(event){
         event.preventDefault();
         console.log('check');
@@ -400,9 +360,11 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
     function sendToPlayer (trackID) {
 
+
             event.preventDefault();
 
-            console.log('arewethereyet');
+    
+
             document.getElementById("trackSource").setAttribute("src","http://localhost:8080/data/audio/getFile?audioID="+trackID);
         document.getElementById("current_track").pause();
         document.getElementById("current_track").load();
@@ -413,5 +375,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 </script>
 <script type="text/javascript" src="/assets/js/controls.js"></script>
+
 </body>
+
+
 </html>
