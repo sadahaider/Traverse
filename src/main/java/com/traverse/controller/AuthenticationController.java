@@ -37,8 +37,8 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)
-    public String getUser(HttpServletRequest httpServletRequest){
-        for (Cookie cookie : httpServletRequest.getCookies()){
+    public String getUser(HttpServletResponse response, HttpServletRequest request) throws IOException {
+        for (Cookie cookie : request.getCookies()){
             if (!cookie.getName().equals("facebook_token")){
                 continue;
             }
@@ -47,9 +47,22 @@ public class AuthenticationController {
                     .put("response", authDatabase.getUserID(content))
                     .toString();
         }
+        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Not logged in.");
         return null;
     }
 
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logout(HttpServletResponse response, HttpServletRequest request){
+        for (Cookie cookie : request.getCookies()){
+            if (!cookie.getName().equals("facebook_token")){
+                continue;
+            }
+            cookie.setMaxAge(0);
+            cookie.setPath(request.getContextPath());
+            response.addCookie(cookie);
+        }
+        return null;
+    }
     /**
      * Callback function. Pass in facebook accessToken and userID.
      *

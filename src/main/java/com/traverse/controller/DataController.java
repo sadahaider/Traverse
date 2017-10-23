@@ -24,7 +24,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -50,7 +53,7 @@ public class DataController {
         return User.fromJSON(response).toJson();
     }
 
-    @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{id}/setUsername", method = RequestMethod.POST)
     public void createUser(@RequestParam("username") String username, @PathVariable("id") String id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException {
         if (userDatabase.doesUserExist(username)){
             httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " already exists.");
@@ -61,6 +64,14 @@ public class DataController {
             httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND, "No user with id: " + id);
             return;
         }
+
+
+        if (username.length() > 12 || !username.matches("^[a-zA-Z0-9]*$")){
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "User " + username + " is a invalid username");
+            return;
+        }
+
+        user.setUsername(username);
         userDatabase.update(user);
         httpServletResponse.sendError(HttpServletResponse.SC_OK, "Success");
     }
