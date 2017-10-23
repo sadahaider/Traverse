@@ -32,9 +32,6 @@ Max file size accepted for upload is 20MB, although you can adjust this value in
 ```
 spring.mvc.view.suffix=.html
 
-logging.level.org.springframework=TRACE
-logging.level.com=TRACE
-
 server.port=8080
 
 cloud.dynamoDB_table_name_users=traverse_users
@@ -49,7 +46,6 @@ cloud.aws_secret_access_key=
 
 spring.social.facebook.appId=
 spring.social.facebook.appSecret=
-
 ```
 
 If you have existing dynamoDB tables that conflict with the table names in your AWS console, please delete them. We have updated our database schema since last build.

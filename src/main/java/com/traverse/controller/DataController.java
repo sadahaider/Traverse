@@ -88,19 +88,31 @@ public class DataController {
         response.flushBuffer();
     }
 
-    @RequestMapping(value = "/audio/create", method = RequestMethod.POST)
+    @RequestMapping(value = "/audio/getImage", method = RequestMethod.GET)
+    public void getAudioImage(@RequestParam("audioID") String audioID, HttpServletResponse response) throws IOException {
+
+        Audio audio = audioDatabase.getAudio(audioID);
+
+        if (audio == null){
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        S3Object object = audioDatabase.getAudioS3ObjectImage(audioID);
+        response.setHeader("Content-disposition", "attachment; filename=" + audio.getName() + "." + object.getObjectMetadata().getUserMetadata().get("type"));
+        IOUtils.copy(object.getObjectContent(), response.getOutputStream());
+        response.flushBuffer();
+    }
+
+    @RequestMapping(value = "/audio/create", method = RequestMethod.POST, produces = "application/json")
     public String createAudio(
             @RequestParam(value = "file") MultipartFile file,
+            @RequestParam(value = "image") MultipartFile imageFile,
             @RequestParam(value = "name") String name,
             @RequestParam(value = "description") String description,
             @RequestParam(value = "ownerID") String ownerID,
             HttpServletRequest httpServletRequest,
             HttpServletResponse httpServletResponse) throws IOException {
-
-        if (file.getSize() > 10 * 1000000){
-            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "File too big");
-            return null;
-        }
 
         Audio audio = new Audio.Builder()
                 .withName(name)
@@ -116,6 +128,11 @@ public class DataController {
 
         if (!audioDatabase.upload(file, audio)){
             httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid file. Only mp3 and wav accepted.");
+            return null;
+        }
+
+        if (!audioDatabase.uploadImage(imageFile, audio)){
+            httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid image file. Only png and jpg accepted");
             return null;
         }
 

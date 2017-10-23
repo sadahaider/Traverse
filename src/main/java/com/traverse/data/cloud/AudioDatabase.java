@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Iterator;
 
 
@@ -73,6 +74,27 @@ public class AudioDatabase {
         return true;
     }
 
+    public boolean uploadImage(MultipartFile multipartFile, Audio audio) throws IOException {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+
+        if (extension == null){
+            return false;
+        }
+
+
+
+        if (!Arrays.asList("jpeg", "jpg", "png").contains(extension.toLowerCase())){
+            return false;
+        }
+
+        objectMetadata.addUserMetadata("type", extension);
+        dbClient.getS3client().putObject(new PutObjectRequest(dbClient.getBucketName(), "image/" + audio.getId(), multipartFile.getInputStream(), objectMetadata));
+        return true;
+    }
+
+
+
     public String getURL(String audioID) throws IOException {
         return dbClient.getS3client().getUrl(dbClient.getBucketName(), audioID).toString();
     }
@@ -80,6 +102,11 @@ public class AudioDatabase {
     public S3Object getAudioS3Object(String audioID) throws IOException {
         return dbClient.getS3client().getObject(new GetObjectRequest(dbClient.getBucketName(), audioID));
     }
+
+    public S3Object getAudioS3ObjectImage(String audioID) throws IOException {
+        return dbClient.getS3client().getObject(new GetObjectRequest(dbClient.getBucketName(), "image/" + audioID));
+    }
+
 
     /**
      *
