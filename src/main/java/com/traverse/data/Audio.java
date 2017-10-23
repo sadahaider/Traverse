@@ -154,6 +154,7 @@ public class Audio {
             if (audio.name.length() > 64){
                 throw new IllegalStateException("Audio name cannot exceed 100 characters.");
             }
+
             audio.id = UUID.randomUUID().toString().replace("-","");
 
             long currentTime = System.currentTimeMillis();
