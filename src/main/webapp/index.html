@@ -147,7 +147,9 @@
 <!-- Articles/Forms start here -->
 <div id="main">
 <article id="songUpload" style="position:fixed; bottom:0; top:10%; height:300px">
-  <form action="https://traverse.dax.cloud" class="trackForm">
+
+  <form action="/#" class="trackForm">
+
     <h2 class="major">Upload your Track</h2>
 
     <div class="field half first">
@@ -170,7 +172,9 @@
   </form>
 </article>
 <article id="createUsername" style="position:fixed; bottom:0; top:0; height:300px">
-  <form action="https://traverse.dax.cloud" class="usernameForm">
+
+  <form action="/#" class="usernameForm">
+
     Please create a username:<br>
     <input type="text" name="username" id="username"><br>
     <ul class="actions">
@@ -182,7 +186,9 @@
 
       <!--Help Page -->
   <article id="Help" style="position:fixed; bottom:0; top:0; height:900px; background: black">
-    <form action="https://traverse.dax.cloud/" class="Help">
+
+    <form action="/#" class="Help">
+
       <ul>
         <h2><br><br> Getting started with TraVerse!</h2><br>
         <p> TraVerse is an open source music sharing site. It can be used by anyone to upload their own music to share with other users.<br></p>
@@ -383,7 +389,9 @@
 
     
 
-            document.getElementById("trackSource").setAttribute("src","https://traverse.dax.cloud/data/audio/getFile?audioID="+trackID);
+
+            document.getElementById("trackSource").setAttribute("src","/data/audio/getFile?audioID="+trackID);
+
         document.getElementById("current_track").pause();
         document.getElementById("current_track").load();
         document.getElementById("current_track").play();
