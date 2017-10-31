@@ -21,6 +21,8 @@
 
   <link rel="stylesheet" href="/assets/css/player.css">
   <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+
+
   <noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
 
   <style>
@@ -155,10 +157,16 @@
     <div class="field half first">
       <label for="name">Name</label>
       <input type="text" name="name" id="name" />
+      <p>Drag and Drop files onto the Choose File panel.</p>
     </div>
     <div class="field half">
-      <label for="thefile">Your File</label>
-      <input type="file" id="thefile"  accept=".wav, .mp3">
+      <label for="thefile">Choose Your Audio</label>
+      <input type="file" id="thefile" accept=".wav, .mp3">
+
+    </div>
+    <div class="field half first">
+      <label for="imageFile">Add Background Image</label>
+      <input type="file" id="imageFile"  accept=".jpeg, .png">
     </div>
     <div class="field">
       <label for="message">Track Description</label>
@@ -278,8 +286,10 @@
                 console.log(ownerIDstring);
             });
             var thefile = document.getElementById('thefile').files[0];
+            var imageFile = document.getElementById('imageFile').files[0];
             var form = new FormData();
             form.append("file", thefile);
+            form.append("image", imageFile);
             form.append("name", document.getElementById('name').value);
             console.log(document.getElementById('name').value);
             form.append("description", document.getElementById('message').value);
@@ -337,6 +347,7 @@
 
 
 
+
       $.ajax({
             type: 'GET',
             url: '/data/audio/list',
@@ -363,7 +374,7 @@
                   var trackName = JSON.stringify(response['results'][key]['audio_name']);
                   trackName=trackName.replace(/^"(.*)"$/, '$1');
                   trackNameText.innerText =trackName;
-
+                  newdiv.setAttribute("style", "background-image:url(/data/audio/getImage?audioID="+audioID);
                   newdiv.appendChild(artistText);
                   newdiv.appendChild(trackNameText);
                   newdiv.appendChild(playButton);
@@ -401,7 +412,7 @@
 
 </script>
 <script type="text/javascript" src="/assets/js/controls.js"></script>
-
+<script src="/assets/js/dropzone.js"></script>
 </body>
 
 
