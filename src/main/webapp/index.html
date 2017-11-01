@@ -374,7 +374,7 @@
                   var trackName = JSON.stringify(response['results'][key]['audio_name']);
                   trackName=trackName.replace(/^"(.*)"$/, '$1');
                   trackNameText.innerText =trackName;
-                  newdiv.setAttribute("style", "background-image:url(/data/audio/getImage?audioID="+audioID);
+                  newdiv.setAttribute("style", "background-repeat:no-repeat;background-size:100px 100px; background-image:url(/data/audio/getImage?audioID="+audioID);
                   newdiv.appendChild(artistText);
                   newdiv.appendChild(trackNameText);
                   newdiv.appendChild(playButton);
