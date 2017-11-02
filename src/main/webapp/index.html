@@ -31,6 +31,14 @@
       overflow:scroll;
       height:1050px;
       position:relative;
+
+      -webkit-column-count: 3;
+      -moz-column-count: 3;
+      column-count: 3;
+      vertical-align: top;
+
+
+
     }
     ::-webkit-scrollbar {
       display: none;
@@ -43,7 +51,7 @@
 
 </head>
 
-<body style="margin-left: 1%; padding-top: 100px; padding-bottom: 150px">
+<body style="margin-left: 1%; padding-top: 125px; padding-bottom: 150px">
 
 
 
@@ -146,7 +154,7 @@
 
 <!-- Articles/Forms start here -->
 <div id="main">
-<article id="songUpload" style="position:fixed; bottom:0; top:10%; height:300px">
+<article id="songUpload" style="position:fixed; bottom:0%; top:10%; height:90%; background-color:black">
 
   <form action="/#" class="trackForm">
 
@@ -155,7 +163,7 @@
     <div class="field half first">
       <label for="name">Name</label>
       <input type="text" name="name" id="name" />
-      <p>Drag and Drop files onto the Choose File panel.</p>
+      <p>Drag and Drop files onto the Choose File panel(20MB max).</p>
     </div>
     <div class="field half">
       <label for="thefile">Choose Your Audio</label>
@@ -355,7 +363,7 @@
 		  success: function(response){
 
               var count = 0;
-              for (var key=0; key <10; key++) {
+              for (var key=0; key <150; key++) {
                   audioID =JSON.stringify(response['results'][key]['audio_id']);
                   audioID=audioID.replace(/^"(.*)"$/, '$1');//this line removes quotes from the audio_id string
                   var newdiv = document.createElement('div');
@@ -372,7 +380,7 @@
                   var trackName = JSON.stringify(response['results'][key]['audio_name']);
                   trackName=trackName.replace(/^"(.*)"$/, '$1');
                   trackNameText.innerText =trackName;
-                  newdiv.setAttribute("style", "background-image:url(/data/audio/getImage?audioID="+audioID);
+                  newdiv.setAttribute("style", "-webkit-column-break-inside: avoid; page-break-inside: avoid; break-inside: avoid-column; background-position:right; background-repeat: no-repeat; background-size:120px 120px; background-image:url(/data/audio/getImage?audioID="+audioID);
                   newdiv.appendChild(artistText);
                   newdiv.appendChild(trackNameText);
                   newdiv.appendChild(playButton);
